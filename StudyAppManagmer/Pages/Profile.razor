@@ -1,0 +1,40 @@
+﻿@using APIServiceLayer.Models
+
+@page "/profile"
+
+
+
+
+<MudContainer>
+    <MudPaper Elevation="3" Padding="32px" Margin="16px">
+        <h3>Профиль пользователя</h3>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6">
+                <MudForm>
+                    <MudTextField Label="Имя пользователя" Disabled="true" Value="_user.Name" />
+                    <MudTextField Label="Электронная почта" Disabled="true" Value="_user.Email" />
+
+                    <MudTextField Label="Новый пароль" Type="InputType.Password" Placeholder="Новый пароль" Value="_password" />
+                    <MudTextField Label="Подтвердите новый пароль" Type="InputType.Password" Placeholder="Подтвердите новый пароль" Value="_passwordRepeat" />
+                    
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled">Сменить пароль</MudButton>
+                </MudForm>
+            </div>
+        </div>
+    </MudPaper>
+</MudContainer>
+
+@code
+{
+    UserDTO _user = new()
+    {
+        Email = "johndoe@example.com",
+        Name = "John Doe",
+        Id = 10
+    };
+
+    string _password;
+    string _passwordRepeat;
+}
