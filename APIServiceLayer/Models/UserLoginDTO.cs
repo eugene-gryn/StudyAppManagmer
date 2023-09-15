@@ -4,7 +4,8 @@ namespace APIServiceLayer.Models;
 
 public class UserLoginDTO
 {
-    [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
+    [Required, RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
     public string Email { get; set; }
+    [Required]
     public string Password { get; set; }
 }

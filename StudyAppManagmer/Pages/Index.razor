@@ -1,13 +1,9 @@
 ﻿@page "/"
 @using MudBlazor
+@using APIServiceLayer.Models
 <PageTitle>Index</PageTitle>
 
-
-@if (IsLogged)
+@code
 {
-    <h1>Profile page</h1>
-}
-else
-{
-    <h1>Login page</h1>
+    UserDTO _user = new UserDTO();
 }
