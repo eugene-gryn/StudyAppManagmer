@@ -3,24 +3,24 @@ using System.Net.Http.Json;
 
 namespace APIServiceLayer.Adapter;
 
-public class ApiHttpAdapter
+public class ApiHttpAdapter : IApiHttpAdapter
 {
     private readonly string _apiUrl;
     private readonly HttpClient _httpClient;
 
-    protected ApiHttpAdapter(HttpClient httpClient, string apiUrl)
+    public ApiHttpAdapter(HttpClient httpClient, string apiUrl)
     {
         _httpClient = httpClient;
         _apiUrl = apiUrl;
     }
 
-    public async Task<TResponse?> GetAsync<TResponse>(string endpoint)
+    public async Task<TResponse?> GetAsync<TResponse>(string endpoint) where TResponse : class
     {
         var response = await _httpClient.GetFromJsonAsync<TResponse>($"{_apiUrl}/{endpoint}");
         return response;
     }
 
-    public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest request)
+    public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest request) where TRequest : class
     {
         var response = await _httpClient.PostAsJsonAsync($"{_apiUrl}/{endpoint}", request);
         response.EnsureSuccessStatusCode();
@@ -33,7 +33,7 @@ public class ApiHttpAdapter
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest request)
+    public async Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest request) where TRequest : class
     {
         var response = await _httpClient.PutAsJsonAsync($"{_apiUrl}/{endpoint}", request);
         response.EnsureSuccessStatusCode();

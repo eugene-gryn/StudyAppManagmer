@@ -1,0 +1,82 @@
+﻿@page "/login"
+@using APIServiceLayer.Models
+
+<MudContainer Class="my-5" Style="max-width: 600px">
+    <MudPaper>
+        <MudCard Class="p-4 shadow">
+            <MudCardContent Class="mx-5">
+                <h3 class="font-monospace  pb-5">LOGIN</h3>
+                <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+                    <MudTextField
+                        Class="my-5"
+                        @bind-Value="_loginModel.Email"
+                        Label="Email"
+                        Variant="Variant.Text"
+                        Required="true"/>
+                    <MudTextField
+                        Class="my-5"
+                        @bind-Value="_loginModel.Password"
+                        Label="Password"
+                        Variant="Variant.Text"
+                        Required="true"
+                        InputType="InputType.Password"/>
+
+                    <MudButton
+                        Class="w-100 my-3"
+                        Type="submit"
+                        Color="Color.Info"
+                        Variant="Variant.Filled">
+                        Login
+                    </MudButton>
+
+                    <p class="pt-5">If you don't account 
+                        <MudLink 
+                            Href="singup" 
+                            Color="Color.Secondary">Register</MudLink>
+                    </p>
+                </EditForm>
+            </MudCardContent>
+        </MudCard>
+    </MudPaper>
+</MudContainer>
+
+
+@code {
+
+    private bool _isRegister = false;
+
+    private UserLoginDTO _loginModel = new();
+
+    private async Task HandleLogin()
+    {
+        
+    }
+
+}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100vh;
+        animation: gradientAnimation 10s linear infinite; /* Применяем анимацию */
+        background: linear-gradient(45deg, #0099b5, #003594); /* Градиентный фон */
+        background-size: 200% 200%; /* Увеличиваем размер фона */
+    }
+    @@keyframes gradientAnimation {
+        0% {
+            background-position: 60% 60%;
+        }
+
+        50% {
+            background-position: 100% 100%;
+        }
+
+        100% {
+            background-position: 60% 60%;
+        }
+    }
+
+}
+</style>
