@@ -1,40 +1,68 @@
-﻿@using APIServiceLayer.Models
-
-@page "/profile"
-
+﻿@page "/profile"
+@using APIServiceLayer.Models
 
 
+<MudContainer Style="max-width: 800px" Class="my-5">
+    <MudPaper Style="overflow:hidden; position:relative;">
+        <MudDrawerContainer Class="mud-height-full">
+            <MudDrawer @bind-Open="_open" Fixed="false" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
+                <MudNavMenu>
+                    <MudNavLink 
+                        OnClick="() => NavigationPageChanged(Pages.Profile)"
+                        Class="pt-5"
+                        Match="NavLinkMatch.All"
+                        IconColor="Color.Dark"
+                        Icon="@Icons.Material.Filled.Person">
+                        Profile data
+                    </MudNavLink>
+                    <MudNavLink 
+                        OnClick="() => NavigationPageChanged(Pages.Statistic)"
+                        Class="pt-5"
+                        Match="NavLinkMatch.All"
+                        IconColor="Color.Dark"
+                        Icon="@Icons.Material.Filled.QueryStats">
+                        Statistics
+                    </MudNavLink>
+                </MudNavMenu>
+            </MudDrawer>
 
-<MudContainer>
-    <MudPaper Elevation="3" Padding="32px" Margin="16px">
-        <h3>Профиль пользователя</h3>
-        <hr />
-
-        <div class="row">
-            <div class="col-md-6">
-                <MudForm>
-                    <MudTextField Label="Имя пользователя" Disabled="true" Value="_user.Name" />
-                    <MudTextField Label="Электронная почта" Disabled="true" Value="_user.Email" />
-
-                    <MudTextField Label="Новый пароль" Type="InputType.Password" Placeholder="Новый пароль" Value="_password" />
-                    <MudTextField Label="Подтвердите новый пароль" Type="InputType.Password" Placeholder="Подтвердите новый пароль" Value="_passwordRepeat" />
-                    
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled">Сменить пароль</MudButton>
-                </MudForm>
+            <div>
+                @switch (_activePage)
+                {
+                    case Pages.Profile:
+                        <ProfileAndUpdatePass/>
+                        break;
+                    case Pages.Statistic:
+                        <Statistics />
+                        break;
+                }
             </div>
-        </div>
+
+        </MudDrawerContainer>
     </MudPaper>
 </MudContainer>
 
+
+
+
 @code
 {
-    UserDTO _user = new()
-    {
-        Email = "johndoe@example.com",
-        Name = "John Doe",
-        Id = 10
-    };
+    bool _open = false;
 
-    string _password;
-    string _passwordRepeat;
+    Pages _activePage = Pages.Profile;
+
+
+
+    private void NavigationPageChanged(Pages page)
+    {
+        _activePage = page;
+    }
+
+    private bool IsPage(Pages page) => _activePage == page;
+
+    private enum Pages
+    {
+        Profile,
+        Statistic
+    }
 }

@@ -1,0 +1,76 @@
+﻿@inject NavigationManager Nav
+@inherits ComponentBase
+
+<MudPaper Elevation="3" Class="p-4 w-100">
+    <p class="fw-bold fs-4">Profile</p>
+    <hr/>
+
+    <MudForm>
+        <MudTextField
+            Variant="Variant.Text"
+            Label="Name"
+            Disabled="true"
+            Value="_user.Name"/>
+        <MudTextField
+            Variant="Variant.Text"
+            Label="Email"
+            Disabled="true"
+            Value="_user.Email"/>
+
+        <div class="my-5 p-3 border-1 rounded">
+            <MudTextField
+                Variant="Variant.Outlined"
+                Label="Password change"
+                Type="InputType.Password"
+                Placeholder="New password"
+                Value="_password"/>
+            <MudTextField Variant="Variant.Outlined"
+                          Type="InputType.Password"
+                          Placeholder="Repeat password"
+                          Value="_passwordRepeat"/>
+            <MudButton
+                OnClick="ProcessChangePass"
+                Class="my-3"
+                FullWidth="true"
+                Color="Color.Primary"
+                Variant="Variant.Text">
+                Change password
+            </MudButton>
+        </div>
+
+        <div>
+            <MudButton
+                OnClick="ProcessLogout"
+                Class="my-2"
+                FullWidth="true"
+                Color="Color.Warning"
+                Variant="Variant.Text"
+                Href="/login">
+                Logout
+            </MudButton>
+        </div>
+    </MudForm>
+</MudPaper>
+
+@code
+{
+    readonly UserDTO _user = new()
+    {
+        Email = "johndoe@example.com",
+        Name = "John Doe",
+        Id = 10
+    };
+
+    readonly string _password = string.Empty;
+    readonly string _passwordRepeat = string.Empty;
+
+    private Task ProcessLogout()
+    {
+        return Task.CompletedTask;
+    }
+
+    private Task ProcessChangePass()
+    {
+        return Task.CompletedTask;
+    }
+}
