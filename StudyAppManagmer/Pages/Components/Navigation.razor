@@ -1,5 +1,5 @@
 ﻿@inherits ComponentBase
-@inject NavigationManager NavigationManager
+@inject NavigationManager Nav
 
 @if (_isVisible)
 {
@@ -67,10 +67,9 @@
 
 
 @code {
-    bool _open = false;
+    static bool _open = false;
     Anchor _anchor;
     bool _isVisible = true;
-
 
     void OpenDrawer(Anchor anchor)
     {
@@ -78,12 +77,19 @@
         _anchor = anchor;
     }
 
+    bool IsAuthenticationPage(string uri) => uri.Contains("/login") || uri.Contains("/singup");
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (NavigationManager.Uri.Contains("/login") || NavigationManager.Uri.Contains("/singup")) _isVisible = false;
+        Nav.LocationChanged += OnPageChangedView;
+        if (IsAuthenticationPage(Nav.Uri)) _isVisible = false;
     }
 
+    private void OnPageChangedView(object? sender, LocationChangedEventArgs e)
+    {
+        if (IsAuthenticationPage(e.Location)) _isVisible = false;
+    }
 
 
 }

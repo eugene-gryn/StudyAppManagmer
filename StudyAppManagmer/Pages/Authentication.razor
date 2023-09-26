@@ -1,5 +1,4 @@
 ﻿@page "/login"
-@using APIServiceLayer.Models
 
 <MudContainer Class="my-5" Style="max-width: 600px">
     <MudPaper>
@@ -7,30 +6,40 @@
             <MudCardContent Class="mx-5">
                 <h3 class="font-monospace  pb-5">LOGIN</h3>
                 <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+
+                    <DataAnnotationsValidator/>
+                    
                     <MudTextField
                         Class="my-5"
                         @bind-Value="_loginModel.Email"
                         Label="Email"
-                        Variant="Variant.Text" />
+                        Variant="Variant.Text"
+                        For="() => _loginModel.Email" />
+
                     <MudTextField
                         Class="my-5"
                         @bind-Value="_loginModel.Password"
                         Label="Password"
                         Variant="Variant.Text"
-                        InputType="InputType.Password"/>
+                        InputType="InputType.Password"
+                        For="() => _loginModel.Password" />
+
 
                     <MudButton
                         Class="w-100 my-3"
-                        Type="submit"
+                        ButtonType="ButtonType.Submit"
                         Color="Color.Info"
                         Variant="Variant.Filled">
                         Login
                     </MudButton>
 
-                    <p class="pt-5">If you don't account 
-                        <MudLink 
-                            Href="singup" 
-                            Color="Color.Secondary">Register</MudLink>
+                    <p class="pt-5">
+                        If you don't account
+                        <MudLink
+                            Href="singup"
+                            Color="Color.Secondary">
+                            Register
+                        </MudLink>
                     </p>
                 </EditForm>
             </MudCardContent>
@@ -41,13 +50,12 @@
 
 @code {
 
-    private bool _isRegister = false;
+    private readonly UserLoginDto _loginModel = new();
 
-    private UserLoginDTO _loginModel = new();
-
-    private async Task HandleLogin()
+    private Task HandleLogin()
     {
-        
+        Console.WriteLine($"Login - {_loginModel.Email} And Password - {_loginModel.Password}");
+        return Task.CompletedTask;
     }
 
 }

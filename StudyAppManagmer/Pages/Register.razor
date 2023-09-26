@@ -1,5 +1,4 @@
 ﻿@page "/singup"
-@using APIServiceLayer.Models
 
 <MudContainer Class="my-5" Style="max-width: 600px">
     <MudPaper>
@@ -7,27 +6,33 @@
             <MudCardContent Class="mx-5">
                 <h3 class="font-monospace  pb-5">REGISTER</h3>
                 <EditForm Model="@_registerModel" OnValidSubmit="HandleSingUp">
+                    <DataAnnotationsValidator />
+
                     <MudTextField Class="my-5"
-                    @bind-Value="_registerModel.Email"
+                                  @bind-Value="_registerModel.Email"
                                   Label="Email"
-                                  Variant="Variant.Text" />
+                                  For="@(() => _registerModel.Email)"
+                                  Variant="Variant.Text"/>
                     <MudTextField Class="my-5"
-                    @bind-Value="_registerModel.Name"
+                                  @bind-Value="_registerModel.Name"
                                   Label="Name"
+                                  For="@(() => _registerModel.Name)"
                                   Variant="Variant.Text" />
                     <MudTextField Class="my-5"
-                    @bind-Value="_registerModel.Password"
+                                  @bind-Value="_registerModel.Password"
                                   Label="Password"
                                   Variant="Variant.Text"
+                                  For="@(() => _registerModel.Password)"
                                   InputType="InputType.Password" />
                     <MudTextField Class="my-5"
-                    @bind-Value="_passwordRepeat"
+                                  @bind-Value="@_registerModel.Password2"
                                   Label="Password repeat"
                                   Variant="Variant.Text"
+                                  For="@(() => _registerModel.Password2)"
                                   InputType="InputType.Password" />
 
                     <MudButton Class="w-100 my-3"
-                               Type="submit"
+                               ButtonType="ButtonType.Submit"
                                Color="Color.Secondary"
                                Variant="Variant.Filled">
                         SING UP
@@ -36,12 +41,10 @@
                     <p class="pt-5">
                         If you already have an account
                         <MudLink Href="login"
-                                 Color="Color.Info">Login</MudLink>
+                                 Color="Color.Info">
+                            Login
+                        </MudLink>
                     </p>
-
-                    <ValidationSummary />
-                    <DataAnnotationsValidator />
-
                 </EditForm>
             </MudCardContent>
         </MudCard>
@@ -49,12 +52,12 @@
 </MudContainer>
 
 @code {
-    private UserRegisterDto _registerModel = new();
-    private string _passwordRepeat = "";
+    private readonly UserRegisterDto _registerModel = new();
 
     private async Task HandleSingUp()
     {
     }
+
 }
 
 
@@ -85,4 +88,3 @@
 
     }
 </style>
-
