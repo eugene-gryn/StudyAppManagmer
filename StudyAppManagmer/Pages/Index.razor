@@ -1,9 +1,30 @@
 ﻿@page "/"
-@using MudBlazor
-@using APIServiceLayer.Models
+@using APIServiceLayer.Facade
+@inject StudlyApiBaseService ApiService
+
 <PageTitle>Index</PageTitle>
+
+@if (token != null)
+{
+    <h1>@token</h1>
+}
+
+<button class="m-5 btn btn-success" @onclick="LoginHandler">Login</button>
 
 @code
 {
-    UserDTO _user = new UserDTO();
+    string? token = null;
+
+    private async void LoginHandler()
+    {
+        try
+        {
+            token = await ApiService.Login(new UserLoginDto { Email = "default", Password = "default" });
+        }
+        catch
+            (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
 }

@@ -12,14 +12,14 @@ namespace APIServiceLayer.Facade
     public class StudlyApiServiceFacade : StudlyApiBaseService
     {
 
-        public StudlyApiServiceFacade(IApiHttpAdapter adapter, ConfigurationApiLinks links) : base(adapter, links)
+        public StudlyApiServiceFacade(IApiHttpAdapter adapter, ApiEndpoints links) : base(adapter, links)
         {
 
         }
 
         public override Task<string?> Login(UserLoginDto user)
         {
-            throw new NotImplementedException();
+            return Adapter.PostAsync<UserLoginDto, string>($"{Links.BaseApiUrl}{Links.BaseApiVersion}{Links.Login}", user);
         }
 
         public override Task<bool> Register(UserRegisterDto data)

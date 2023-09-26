@@ -7,18 +7,17 @@ namespace APIServiceLayer.Facade;
 public abstract class StudlyApiBaseService
 {
     protected readonly IApiHttpAdapter Adapter;
-    private readonly ConfigurationApiLinks _links;
+    protected readonly ApiEndpoints Links;
 
-    protected StudlyApiBaseService(IApiHttpAdapter adapter, ConfigurationApiLinks links)
+    protected StudlyApiBaseService(IApiHttpAdapter adapter, ApiEndpoints links)
     {
         Adapter = adapter;
-        _links = links;
+        Links = links;
     }
 
-    public abstract Task<string?> Login (UserLoginDto user);
+    public abstract Task<string?> Login(UserLoginDto user);
 
     public abstract Task<bool> Register(UserRegisterDto data);
 
     public abstract Task<UserDTO?> GetUserData(string token);
-
 }

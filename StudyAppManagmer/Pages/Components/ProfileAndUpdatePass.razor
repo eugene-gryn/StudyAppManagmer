@@ -22,12 +22,18 @@
                 Variant="Variant.Outlined"
                 Label="Password change"
                 Type="InputType.Password"
+                Placeholder="Old password"
+                Value="_passwords.OldPassword"/>
+            <MudTextField
+                Variant="Variant.Outlined"
+                Type="InputType.Password"
                 Placeholder="New password"
-                Value="_password"/>
-            <MudTextField Variant="Variant.Outlined"
-                          Type="InputType.Password"
-                          Placeholder="Repeat password"
-                          Value="_passwordRepeat"/>
+                Value="_passwords.Password"/>
+            <MudTextField
+                Variant="Variant.Outlined"
+                Type="InputType.Password"
+                Placeholder="Repeat password"
+                Value="_passwords.Password2"/>
             <MudButton
                 OnClick="ProcessChangePass"
                 Class="my-3"
@@ -61,8 +67,7 @@
         Id = 10
     };
 
-    readonly string _password = string.Empty;
-    readonly string _passwordRepeat = string.Empty;
+    PasswordUpdateDto _passwords = new();
 
     private Task ProcessLogout()
     {
