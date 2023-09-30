@@ -17,19 +17,19 @@ namespace APIServiceLayer.Facade
 
         }
 
-        public override Task<string?> Login(UserLoginDto user)
+        public override async Task<TokenDto?> Login(UserLoginDto user)
         {
-            return Adapter.PostAsync<UserLoginDto, string>($"{Links.BaseApiUrl}{Links.BaseApiVersion}{Links.Login}", user);
+            return await Adapter.PostAsync<UserLoginDto, TokenDto>($"{Links.EndpointApiBaseUrl()}{Links.Login}", user);
         }
 
-        public override Task<bool> Register(UserRegisterDto data)
+        public override async Task Register(UserRegisterDto data)
         {
-            throw new NotImplementedException();
+            await Adapter.PostAsync<UserRegisterDto, string>($"{Links.EndpointApiBaseUrl()}{Links.Customer}", data);
         }
 
-        public override Task<UserDTO?> GetUserData(string token)
+        public override async Task<UserDTO?> GetUserData()
         {
-            throw new NotImplementedException();
+            return await Adapter.GetAsync<UserDTO>($"{Links.EndpointApiBaseUrl()}{Links.Customer}");
         }
     }
 }

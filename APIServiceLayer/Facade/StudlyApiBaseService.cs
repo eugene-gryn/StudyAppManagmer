@@ -15,9 +15,9 @@ public abstract class StudlyApiBaseService
         Links = links;
     }
 
-    public abstract Task<string?> Login(UserLoginDto user);
+    public abstract Task<TokenDto?> Login(UserLoginDto user);
 
-    public abstract Task<bool> Register(UserRegisterDto data);
+    public abstract Task Register(UserRegisterDto data);
 
-    public abstract Task<UserDTO?> GetUserData(string token);
+    public abstract Task<UserDTO?> GetUserData();
 }

@@ -1,4 +1,6 @@
-﻿@page "/singup"
+﻿@inject AuthService Auth;
+
+@page "/singup"
 
 <MudContainer Class="my-5" Style="max-width: 600px">
     <MudPaper>
@@ -56,6 +58,7 @@
 
     private async Task HandleSingUp()
     {
+        await Auth.SingUp(_registerModel);
     }
 
 }

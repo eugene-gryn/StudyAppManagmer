@@ -1,69 +1,60 @@
 ﻿@inherits ComponentBase
 @inject NavigationManager Nav
 
-@if (_isVisible)
-{
-    <MudAppBar Color="Color.Primary" Fixed="false">
-        <MudIconButton
-            OnClick="@(() => OpenDrawer(Anchor.Start))"
-            Icon="@Icons.Material.Filled.Menu"
-            Color="Color.Inherit"
-            Edge="Edge.Start"/>
-        <MudButton
-            Class="mx-3"
-            Variant="Variant.Text"
-            Style="color: white;"
-            Href="/">
+<MudAppBar Color="Color.Primary" Fixed="false">
+    <MudIconButton OnClick="@(() => OpenDrawer(Anchor.Start))"
+                   Icon="@Icons.Material.Filled.Menu"
+                   Color="Color.Inherit"
+                   Edge="Edge.Start" />
+    <MudButton Class="mx-3"
+               Variant="Variant.Text"
+               Style="color: white;"
+               Href="/">
+        Main
+    </MudButton>
+
+
+    <MudSpacer />
+
+    <MudButton Class="mx-3"
+               Variant="Variant.Text"
+               Style="color: white;"
+               Href="/profile">
+        Profile
+    </MudButton>
+    <MudButton Class="mx-3"
+               Variant="Variant.Text"
+               Style="color: white;"
+               Href="/about">
+        About
+    </MudButton>
+    <MudIconButton Href="https://github.com"
+                   Icon="@Icons.Custom.Brands.GitHub"
+                   Color="Color.Inherit" />
+</MudAppBar>
+
+<MudDrawer @bind-Open="@_open" Anchor="@_anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">Studly</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Class="my-2"
+                    Icon="@Icons.Material.Filled.ListAlt"
+                    Match="NavLinkMatch.All">
             Main
-        </MudButton>
-
-
-        <MudSpacer/>
-
-        <MudButton Class="mx-3"
-                   Variant="Variant.Text"
-                   Style="color: white;"
-                   Href="/profile">
+        </MudNavLink>
+        <MudNavLink Class="my-2"
+                    Icon="@Icons.Material.Filled.Person"
+                    Match="NavLinkMatch.All">
             Profile
-        </MudButton>
-        <MudButton Class="mx-3"
-                   Variant="Variant.Text"
-                   Style="color: white;"
-                   Href="/about">
+        </MudNavLink>
+        <MudNavLink Class="my-2"
+                    Icon="@Icons.Material.Filled.QuestionAnswer"
+                    Match="NavLinkMatch.All">
             About
-        </MudButton>
-        <MudIconButton
-            Href="https://github.com"
-            Icon="@Icons.Custom.Brands.GitHub" 
-            Color="Color.Inherit"/>
-    </MudAppBar>
-
-    <MudDrawer @bind-Open="@_open" Anchor="@_anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Studly</MudText>
-        </MudDrawerHeader>
-        <MudNavMenu>
-            <MudNavLink
-                Class="my-2"
-                Icon="@Icons.Material.Filled.ListAlt"
-                Match="NavLinkMatch.All">
-                Main
-            </MudNavLink>
-            <MudNavLink
-                Class="my-2"
-                Icon="@Icons.Material.Filled.Person"
-                Match="NavLinkMatch.All">
-                Profile
-            </MudNavLink>
-            <MudNavLink
-                Class="my-2"
-                Icon="@Icons.Material.Filled.QuestionAnswer"
-                Match="NavLinkMatch.All">
-                About
-            </MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
-}
+        </MudNavLink>
+    </MudNavMenu>
+</MudDrawer>
 
 
 @code {
@@ -77,7 +68,10 @@
         _anchor = anchor;
     }
 
-    bool IsAuthenticationPage(string uri) => uri.Contains("/login") || uri.Contains("/singup");
+    bool IsAuthenticationPage(string uri)
+    {
+        return uri.Contains("/login") || uri.Contains("/singup");
+    }
 
     protected override void OnInitialized()
     {

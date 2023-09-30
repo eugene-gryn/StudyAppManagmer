@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyAppManagmer", "StudyAppManagmer\StudyAppManagmer.csproj", "{6A948AEC-9A2D-46DF-8AF9-C2F501AE5247}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyAppManagement", "StudyAppManagmer\StudyAppManagement.csproj", "{6A948AEC-9A2D-46DF-8AF9-C2F501AE5247}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIServiceLayer", "APIServiceLayer\APIServiceLayer.csproj", "{76F49978-A114-48B3-A037-01F19F9AB4A8}"
 EndProject

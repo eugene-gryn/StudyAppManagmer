@@ -1,61 +1,74 @@
-﻿@page "/login"
+﻿@inject AuthService Auth;
+@inject NavigationManager Nav;
+@inject AuthenticationStateProvider AuthProvider
 
-<MudContainer Class="my-5" Style="max-width: 600px">
-    <MudPaper>
-        <MudCard Class="p-4 shadow">
-            <MudCardContent Class="mx-5">
-                <h3 class="font-monospace  pb-5">LOGIN</h3>
-                <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+@page "/login"
 
-                    <DataAnnotationsValidator/>
-                    
-                    <MudTextField
-                        Class="my-5"
-                        @bind-Value="_loginModel.Email"
-                        Label="Email"
-                        Variant="Variant.Text"
-                        For="() => _loginModel.Email" />
+<AuthorizeView>
+    <Authorized>
 
-                    <MudTextField
-                        Class="my-5"
-                        @bind-Value="_loginModel.Password"
-                        Label="Password"
-                        Variant="Variant.Text"
-                        InputType="InputType.Password"
-                        For="() => _loginModel.Password" />
+    </Authorized>
+    <NotAuthorized>
+        <MudContainer Class="my-5" Style="max-width: 600px">
+            <MudPaper>
+                <MudCard Class="p-4 shadow">
+                    <MudCardContent Class="mx-5">
+                        <h3 class="font-monospace  pb-5">LOGIN</h3>
+                        <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+
+                            <DataAnnotationsValidator />
+
+                            <MudTextField Class="my-5"
+                                          @bind-Value="_loginModel.Email"
+                                          Label="Email"
+                                          Variant="Variant.Text"
+                                          For="() => _loginModel.Email" />
+
+                            <MudTextField Class="my-5"
+                                          @bind-Value="_loginModel.Password"
+                                          Label="Password"
+                                          Variant="Variant.Text"
+                                          InputType="InputType.Password"
+                                          For="() => _loginModel.Password" />
 
 
-                    <MudButton
-                        Class="w-100 my-3"
-                        ButtonType="ButtonType.Submit"
-                        Color="Color.Info"
-                        Variant="Variant.Filled">
-                        Login
-                    </MudButton>
+                            <MudButton Class="w-100 my-3"
+                                       ButtonType="ButtonType.Submit"
+                                       Color="Color.Info"
+                                       Variant="Variant.Filled">
+                                Login
+                            </MudButton>
 
-                    <p class="pt-5">
-                        If you don't account
-                        <MudLink
-                            Href="singup"
-                            Color="Color.Secondary">
-                            Register
-                        </MudLink>
-                    </p>
-                </EditForm>
-            </MudCardContent>
-        </MudCard>
-    </MudPaper>
-</MudContainer>
+                            <p class="pt-5">
+                                If you don't account
+                                <MudLink Href="singup"
+                                         Color="Color.Secondary">
+                                    Register
+                                </MudLink>
+                            </p>
+                        </EditForm>
+                    </MudCardContent>
+                </MudCard>
+            </MudPaper>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>
+
 
 
 @code {
 
     private readonly UserLoginDto _loginModel = new();
 
-    private Task HandleLogin()
+    private async Task HandleLogin()
     {
-        Console.WriteLine($"Login - {_loginModel.Email} And Password - {_loginModel.Password}");
-        return Task.CompletedTask;
+        var value = await Auth.Login(_loginModel);
+        Nav.NavigateTo("/");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthProvider.GetAuthenticationStateAsync();
     }
 
 }
