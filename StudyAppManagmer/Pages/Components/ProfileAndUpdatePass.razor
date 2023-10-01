@@ -1,77 +1,86 @@
-﻿@inject NavigationManager Nav
+﻿@inject AuthService Auth;
+@inject NavigationManager Nav;
+@inject AuthenticationStateProvider AuthProvider;
+@inject StudlyApiBaseService Service;
 @inherits ComponentBase
 
 <MudPaper Elevation="3" Class="p-4 w-100">
     <p class="fw-bold fs-4">Profile</p>
     <hr/>
-
-    <MudForm>
-        <MudTextField
-            Variant="Variant.Text"
-            Label="Name"
-            Disabled="true"
-            Value="_user.Name"/>
-        <MudTextField
-            Variant="Variant.Text"
-            Label="Email"
-            Disabled="true"
-            Value="_user.Email"/>
-
-        <div class="my-5 p-3 border-1 rounded">
+    @if (_user != null)
+    {
+        <MudForm>
             <MudTextField
-                Variant="Variant.Outlined"
-                Label="Password change"
-                Type="InputType.Password"
-                Placeholder="Old password"
-                Value="_passwords.OldPassword"/>
-            <MudTextField
-                Variant="Variant.Outlined"
-                Type="InputType.Password"
-                Placeholder="New password"
-                Value="_passwords.Password"/>
-            <MudTextField
-                Variant="Variant.Outlined"
-                Type="InputType.Password"
-                Placeholder="Repeat password"
-                Value="_passwords.Password2"/>
-            <MudButton
-                OnClick="ProcessChangePass"
-                Class="my-3"
-                FullWidth="true"
-                Color="Color.Primary"
-                Variant="Variant.Text">
-                Change password
-            </MudButton>
-        </div>
-
-        <div>
-            <MudButton
-                OnClick="ProcessLogout"
-                Class="my-2"
-                FullWidth="true"
-                Color="Color.Warning"
                 Variant="Variant.Text"
-                Href="/login">
-                Logout
-            </MudButton>
-        </div>
-    </MudForm>
+                Label="Name"
+                Disabled="true"
+                Value="_user.Name"/>
+            <MudTextField
+                Variant="Variant.Text"
+                Label="Email"
+                Disabled="true"
+                Value="_user.Email"/>
+
+            <div class="my-5 p-3 border-1 rounded">
+                <MudTextField
+                    Variant="Variant.Outlined"
+                    Label="Password change"
+                    Type="InputType.Password"
+                    Placeholder="Old password"
+                    Value="_passwords.OldPassword"/>
+                <MudTextField
+                    Variant="Variant.Outlined"
+                    Type="InputType.Password"
+                    Placeholder="New password"
+                    Value="_passwords.Password"/>
+                <MudTextField
+                    Variant="Variant.Outlined"
+                    Type="InputType.Password"
+                    Placeholder="Repeat password"
+                    Value="_passwords.Password2"/>
+                <MudButton
+                    OnClick="ProcessChangePass"
+                    Class="my-3"
+                    FullWidth="true"
+                    Color="Color.Primary"
+                    Variant="Variant.Text">
+                    Change password
+                </MudButton>
+            </div>
+
+            <div>
+                <MudButton
+                    OnClick="ProcessLogout"
+                    Class="my-2"
+                    FullWidth="true"
+                    Color="Color.Warning"
+                    Variant="Variant.Text"
+                    Href="/login">
+                    Logout
+                </MudButton>
+            </div>
+        </MudForm>
+
+    }
 </MudPaper>
 
 @code
 {
-    readonly UserDTO _user = new()
-    {
-        Email = "johndoe@example.com",
-        Name = "John Doe",
-        Id = 10
-    };
+    UserDTO? _user;
 
     PasswordUpdateDto _passwords = new();
 
-    private Task ProcessLogout()
+    protected override async Task OnInitializedAsync()
     {
-        return Task.CompletedTask;
+        _user = await Service.GetUserData();
+    }
+
+
+
+    private async Task ProcessLogout()
+    {
+        await Auth.Logout();
+        Nav.NavigateTo("/login");
     }
 
     private Task ProcessChangePass()

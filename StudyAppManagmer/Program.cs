@@ -29,7 +29,7 @@ var apiLinks = new ApiEndpoints();
 builder.Configuration.GetSection("ApiEndpoints").Bind(apiLinks);
 builder.Services.AddSingleton(apiLinks);
 
-builder.Services.AddScoped<IApiHttpAdapter, ApiHttpAdapter>(s => new ApiHttpAdapter(new HttpClient()));
+builder.Services.AddScoped<IApiHttpAdapter, ApiHttpAdapter>();
 builder.Services.AddScoped<StudlyApiBaseService, StudlyApiServiceFacade>();
 
 // Other settings

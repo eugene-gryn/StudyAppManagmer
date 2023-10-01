@@ -1,5 +1,9 @@
-﻿@page "/profile"
-@using APIServiceLayer.Models
+﻿@inject AuthService Auth;
+@inject NavigationManager Nav;
+@inject AuthenticationStateProvider AuthProvider
+@attribute [Authorize]
+@page "/profile"
+
 
 
 <MudContainer Style="max-width: 800px" Class="my-5">
@@ -7,7 +11,7 @@
         <MudDrawerContainer Class="mud-height-full">
             <MudDrawer @bind-Open="_open" Fixed="false" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
                 <MudNavMenu>
-                    <MudNavLink 
+                    <MudNavLink
                         OnClick="() => NavigationPageChanged(Pages.Profile)"
                         Class="pt-5"
                         Match="NavLinkMatch.All"
@@ -15,7 +19,7 @@
                         Icon="@Icons.Material.Filled.Person">
                         Profile data
                     </MudNavLink>
-                    <MudNavLink 
+                    <MudNavLink
                         OnClick="() => NavigationPageChanged(Pages.Statistic)"
                         Class="pt-5"
                         Match="NavLinkMatch.All"
@@ -33,7 +37,7 @@
                         <ProfileAndUpdatePass/>
                         break;
                     case Pages.Statistic:
-                        <Statistics />
+                        <Statistics/>
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -45,15 +49,16 @@
 </MudContainer>
 
 
-
-
 @code
 {
-    bool _open = false;
+    bool _open;
 
     Pages _activePage = Pages.Profile;
 
-
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthProvider.GetAuthenticationStateAsync();
+    }
 
     private void NavigationPageChanged(Pages page)
     {

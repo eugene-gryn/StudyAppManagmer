@@ -1,59 +1,53 @@
-﻿@inject AuthService Auth;
+﻿@page "/login"
+
+@inject AuthService Auth;
 @inject NavigationManager Nav;
 @inject AuthenticationStateProvider AuthProvider
-
-@page "/login"
-
-<AuthorizeView>
-    <Authorized>
-
-    </Authorized>
-    <NotAuthorized>
-        <MudContainer Class="my-5" Style="max-width: 600px">
-            <MudPaper>
-                <MudCard Class="p-4 shadow">
-                    <MudCardContent Class="mx-5">
-                        <h3 class="font-monospace  pb-5">LOGIN</h3>
-                        <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
-
-                            <DataAnnotationsValidator />
-
-                            <MudTextField Class="my-5"
-                                          @bind-Value="_loginModel.Email"
-                                          Label="Email"
-                                          Variant="Variant.Text"
-                                          For="() => _loginModel.Email" />
-
-                            <MudTextField Class="my-5"
-                                          @bind-Value="_loginModel.Password"
-                                          Label="Password"
-                                          Variant="Variant.Text"
-                                          InputType="InputType.Password"
-                                          For="() => _loginModel.Password" />
+@using Nextended.Core.Extensions
 
 
-                            <MudButton Class="w-100 my-3"
-                                       ButtonType="ButtonType.Submit"
-                                       Color="Color.Info"
-                                       Variant="Variant.Filled">
-                                Login
-                            </MudButton>
+<MudContainer Class="my-5" Style="max-width: 600px">
+    <MudPaper>
+        <MudCard Class="p-4 shadow">
+            <MudCardContent Class="mx-5">
+                <h3 class="font-monospace  pb-5">LOGIN</h3>
+                <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
 
-                            <p class="pt-5">
-                                If you don't account
-                                <MudLink Href="singup"
-                                         Color="Color.Secondary">
-                                    Register
-                                </MudLink>
-                            </p>
-                        </EditForm>
-                    </MudCardContent>
-                </MudCard>
-            </MudPaper>
-        </MudContainer>
-    </NotAuthorized>
-</AuthorizeView>
+                    <DataAnnotationsValidator />
 
+                    <MudTextField Class="my-5"
+                                  @bind-Value="_loginModel.Email"
+                                  Label="Email"
+                                  Variant="Variant.Text"
+                                  For="() => _loginModel.Email" />
+
+                    <MudTextField Class="my-5"
+                                  @bind-Value="_loginModel.Password"
+                                  Label="Password"
+                                  Variant="Variant.Text"
+                                  InputType="InputType.Password"
+                                  For="() => _loginModel.Password" />
+
+
+                    <MudButton Class="w-100 my-3"
+                               ButtonType="ButtonType.Submit"
+                               Color="Color.Info"
+                               Variant="Variant.Filled">
+                        Login
+                    </MudButton>
+
+                    <p class="pt-5">
+                        If you don't account
+                        <MudLink Href="singup"
+                                 Color="Color.Secondary">
+                            Register
+                        </MudLink>
+                    </p>
+                </EditForm>
+            </MudCardContent>
+        </MudCard>
+    </MudPaper>
+</MudContainer>
 
 
 @code {
@@ -69,33 +63,9 @@
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthProvider.GetAuthenticationStateAsync();
+        if (!state.User.Claims.IsEmpty()) Nav.NavigateTo("/");
     }
 
 }
 
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100vh;
-        animation: gradientAnimation 10s linear infinite; /* Применяем анимацию */
-        background: linear-gradient(45deg, #0099b5, #003594); /* Градиентный фон */
-        background-size: 200% 200%; /* Увеличиваем размер фона */
-    }
-    @@keyframes gradientAnimation {
-        0% {
-            background-position: 60% 60%;
-        }
-
-        50% {
-            background-position: 100% 100%;
-        }
-
-        100% {
-            background-position: 60% 60%;
-        }
-    }
-
-}
-</style>
+<CustomBackground Color1="#0099b5" Color2="#003594" />

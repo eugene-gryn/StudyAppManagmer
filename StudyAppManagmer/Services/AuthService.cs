@@ -1,23 +1,21 @@
 ﻿using System.Net;
 using APIServiceLayer.Facade;
 using APIServiceLayer.Models;
-using MudBlazor;
-using Newtonsoft.Json.Linq;
-using YamlDotNet.Core.Tokens;
 
 namespace StudyAppManagement.Services;
 
 public class AuthService
 {
     private readonly StudlyApiBaseService _apiService;
-    private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authService;
+    private readonly ILocalStorageService _localStorage;
 
-    public AuthService(StudlyApiBaseService ApiService, ILocalStorageService LocalStorage, AuthenticationStateProvider AuthService)
+    public AuthService(StudlyApiBaseService apiService, ILocalStorageService localStorage,
+        AuthenticationStateProvider authService)
     {
-        _apiService = ApiService;
-        _localStorage = LocalStorage;
-        _authService = AuthService;
+        _apiService = apiService;
+        _localStorage = localStorage;
+        _authService = authService;
     }
 
     public async Task<OperationResult> Login(UserLoginDto user)
@@ -46,12 +44,13 @@ public class AuthService
 
         return OperationResult.Success;
     }
+
     public async Task<OperationResult> SingUp(UserRegisterDto user)
     {
         try
         {
             await _apiService.Register(user);
-            return await Login(new UserLoginDto() { Email = user.Email, Password = user.Password });
+            return await Login(new UserLoginDto { Email = user.Email, Password = user.Password });
         }
         catch (HttpRequestException e)
         {
@@ -69,11 +68,10 @@ public class AuthService
 
     public async Task<OperationResult> Logout()
     {
-        await _localStorage.SetItemAsStringAsync("user", null);
+        await _localStorage.SetItemAsStringAsync("user", "");
 
         await _authService.GetAuthenticationStateAsync();
 
         return OperationResult.Success;
     }
 }
-

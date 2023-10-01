@@ -3,7 +3,33 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
                 <NotAuthorized>
-                    <h1>Not logged!</h1>
+
+                    <MudContainer Class="d-flex justify-content-center align-items-center vh-100" Style="max-width: 800px">
+                        <MudPaper Class="welcome-paper p-4">
+
+                            <MudText Class="mb-3 font-monospace" Align="Align.Center" Typo="Typo.h4">Welcome to the Studly app</MudText>
+                            
+                            <MudText Typo="Typo.h6">This is an application for managing your tasks and tracking the time spent on them.</MudText>
+
+                            <MudText Typo="Typo.h6">This is a test project written by two programmers students of NAU. Nazar Dragusevich (API, Backend) Eugene Hryn (Blazor WA, API).</MudText>
+                            
+                            <MudText Class="my-3" Typo="Typo.subtitle1">Nazar Dragusevich</MudText>
+                            
+                            <MudText Class="my-3" Typo="Typo.subtitle1">Eugene Hryn</MudText>
+
+                            <MudText Typo="Typo.subtitle1">You can start using the App by registering or logging in if you already have an account.</MudText>
+                            
+                            <div class="d-flex justify-content-center w-100 mt-5">
+                                <MudButton Size="Size.Large" Variant="Variant.Filled" OnClick="NavigateToMainPage" Color="Color.Secondary">
+                                    Get Started
+                                </MudButton>
+                            </div>
+
+                        </MudPaper>
+                    </MudContainer>
+                    
+                    <CustomBackground />
+
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -17,3 +43,11 @@
     </Router>
 </CascadingAuthenticationState>
 
+@code {
+
+    private Task NavigateToMainPage()
+    {
+        throw new NotImplementedException();
+    }
+
+}

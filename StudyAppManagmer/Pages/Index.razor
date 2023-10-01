@@ -1,8 +1,10 @@
 ﻿@page "/"
-@using APIServiceLayer.Facade
 @inject StudlyApiBaseService ApiService
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthService
+
+@attribute [Authorize]
+
 <PageTitle>Index</PageTitle>
 
 @code

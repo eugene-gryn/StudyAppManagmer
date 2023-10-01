@@ -15,6 +15,7 @@ public class ApiAuthStateProvider : AuthenticationStateProvider
         _http = http;
     }
 
+
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = await _localStorage.GetItemAsStringAsync("user");
