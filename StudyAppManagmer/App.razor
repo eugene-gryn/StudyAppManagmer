@@ -1,4 +1,6 @@
-﻿<CascadingAuthenticationState>
+﻿@inject NavigationManager Nav;
+
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
@@ -13,14 +15,23 @@
 
                             <MudText Typo="Typo.h6">This is a test project written by two programmers students of NAU. Nazar Dragusevich (API, Backend) Eugene Hryn (Blazor WA, API).</MudText>
                             
-                            <MudText Class="my-3" Typo="Typo.subtitle1">Nazar Dragusevich</MudText>
-                            
-                            <MudText Class="my-3" Typo="Typo.subtitle1">Eugene Hryn</MudText>
+                            <div class="my-5">
+                                <MudLink Href="https://github.com/Dragusev1ch" Class="my-3" Typo="Typo.subtitle1">
+                                    <MudIcon Color="Color.Dark" Icon="@Icons.Custom.Brands.GitHub" Title="GitHub" />
+                                    Nazar Dragusevich
+                                </MudLink>
+                            </div>
+                            <div class="my-5">
+                                <MudLink Href="https://github.com/eugene-gryn" Class="my-3" Typo="Typo.subtitle1">
+                                    <MudIcon Color="Color.Dark" Icon="@Icons.Custom.Brands.GitHub" Title="GitHub" />
+                                    Eugene Hryn
+                                </MudLink>
+                            </div>
 
                             <MudText Typo="Typo.subtitle1">You can start using the App by registering or logging in if you already have an account.</MudText>
                             
                             <div class="d-flex justify-content-center w-100 mt-5">
-                                <MudButton Size="Size.Large" Variant="Variant.Filled" OnClick="NavigateToMainPage" Color="Color.Secondary">
+                                <MudButton Class="shadow-lg" Size="Size.Large" Variant="Variant.Filled" OnClick="NavigateToMainPage" Color="Color.Secondary">
                                     Get Started
                                 </MudButton>
                             </div>
@@ -45,9 +56,9 @@
 
 @code {
 
-    private Task NavigateToMainPage()
+    private void NavigateToMainPage()
     {
-        throw new NotImplementedException();
+        Nav.NavigateTo("/login");
     }
 
 }
