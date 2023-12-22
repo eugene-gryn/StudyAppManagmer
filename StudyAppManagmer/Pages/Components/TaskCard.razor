@@ -1,0 +1,9 @@
+﻿@using APIServiceLayer.Models.Tasks
+@inherits ComponentBase
+
+<h3>@Task.Title</h3>
+
+@code {
+    [Parameter]
+    public TaskDto Task { get; set; }
+}
