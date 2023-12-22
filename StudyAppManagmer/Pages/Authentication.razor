@@ -3,6 +3,7 @@
 @inject AuthService Auth;
 @inject NavigationManager Nav;
 @inject AuthenticationStateProvider AuthProvider
+@inject ISnackbar AlertMessenger
 @using Nextended.Core.Extensions
 
 
@@ -15,13 +16,13 @@
 
                     <DataAnnotationsValidator />
 
-                    <MudTextField Class="my-5"
+                    <MudTextField Class="my-5 p-1"
                                   @bind-Value="_loginModel.Email"
                                   Label="Email"
                                   Variant="Variant.Text"
                                   For="() => _loginModel.Email" />
 
-                    <MudTextField Class="my-5"
+                    <MudTextField Class="my-5 p-1"
                                   @bind-Value="_loginModel.Password"
                                   Label="Password"
                                   Variant="Variant.Text"
@@ -57,7 +58,16 @@
     private async Task HandleLogin()
     {
         var value = await Auth.Login(_loginModel);
-        Nav.NavigateTo("/");
+
+        if (value.StatusCode == 200)
+        {
+            Nav.NavigateTo("/");
+            AlertMessenger.Add("Successfully get in!", Severity.Success);
+        }
+        else
+        {
+            AlertMessenger.Add(value.ExceptionMessage, Severity.Error);
+        }
     }
 
     protected override async Task OnInitializedAsync()

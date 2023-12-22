@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using APIServiceLayer.Facade;
 using APIServiceLayer.Models;
+using APIServiceLayer.RequestFeedback;
 
 namespace StudyAppManagement.Services;
 
@@ -18,60 +19,49 @@ public class AuthService
         _authService = authService;
     }
 
-    public async Task<OperationResult> Login(UserLoginDto user)
+    public async Task<ServerErrorResponse> Login(UserLoginDto user)
     {
-        TokenDto? token = new();
-
         try
         {
+            TokenDto? token = new();
+
             token = await _apiService.Login(user);
+
+            await _localStorage.SetItemAsStringAsync("user", token?.Value);
+
+            await _authService.GetAuthenticationStateAsync();
         }
-        catch (HttpRequestException e)
+        catch (RequestFeedbackException e)
         {
-            Console.WriteLine(e.Message);
-            if (e.StatusCode == HttpStatusCode.NotFound) return OperationResult.BadRequest;
-            if (e.StatusCode == HttpStatusCode.NotImplemented) return OperationResult.ServerError;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
+            Console.WriteLine(e.BodyErrorModel.ExceptionMessage);
+
+            return e.BodyErrorModel;
         }
 
-
-        await _localStorage.SetItemAsStringAsync("user", token?.Value);
-
-        await _authService.GetAuthenticationStateAsync();
-
-        return OperationResult.Success;
+        return new ServerErrorResponse();
     }
 
-    public async Task<OperationResult> SingUp(UserRegisterDto user)
+    public async Task<ServerErrorResponse> SingUp(UserRegisterDto user)
     {
         try
         {
             await _apiService.Register(user);
             return await Login(new UserLoginDto { Email = user.Email, Password = user.Password });
         }
-        catch (HttpRequestException e)
+        catch (RequestFeedbackException e)
         {
-            Console.WriteLine(e.Message);
-            if (e.StatusCode == HttpStatusCode.NotFound) return OperationResult.BadRequest;
-            if (e.StatusCode == HttpStatusCode.NotImplemented) return OperationResult.ServerError;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+            Console.WriteLine(e.BodyErrorModel.ExceptionMessage);
 
-        return OperationResult.Success;
+            return e.BodyErrorModel;
+        }
     }
 
-    public async Task<OperationResult> Logout()
+    public async Task<ServerErrorResponse> Logout()
     {
         await _localStorage.SetItemAsStringAsync("user", "");
 
         await _authService.GetAuthenticationStateAsync();
 
-        return OperationResult.Success;
+        return new ServerErrorResponse();
     }
 }

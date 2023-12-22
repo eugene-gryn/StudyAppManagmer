@@ -4,6 +4,7 @@
 @inject AuthService Auth;
 @inject NavigationManager Nav;
 @inject AuthenticationStateProvider AuthProvider
+@inject ISnackbar AlertMessenger
 
 <MudContainer Class="my-5" Style="max-width: 600px">
     <MudPaper>
@@ -61,8 +62,17 @@
 
     private async Task HandleSingUp()
     {
-        await Auth.SingUp(_registerModel);
-        Nav.NavigateTo("/");
+        var response = await Auth.SingUp(_registerModel);
+
+        if (response.StatusCode == 200)
+        {
+            Nav.NavigateTo("/");
+            AlertMessenger.Add("Successfully registered!", Severity.Success);
+        }
+        else
+        {
+            AlertMessenger.Add(response.ExceptionMessage, Severity.Error);
+        }
     }
 
     protected override async Task OnInitializedAsync()

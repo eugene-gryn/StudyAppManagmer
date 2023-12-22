@@ -1,6 +1,5 @@
-﻿using System.Net.Http.Headers;
-using Blazored.LocalStorage;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using APIServiceLayer.RequestFeedback;
 
 namespace APIServiceLayer.Adapter;
 
@@ -13,25 +12,42 @@ public class ApiHttpAdapter : IApiHttpAdapter
         _httpClient = httpClient;
     }
 
+
+    private async Task EnsureSuccessServerResponse(HttpResponseMessage message)
+    {
+        try
+        { 
+            message.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            var content = await message.Content.ReadFromJsonAsync<ServerErrorResponse>();
+
+            if (content != null) throw new RequestFeedbackException(content);
+
+            throw;
+        }
+    }
+
     public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest request)
         where TRequest : class
     {
         var response = await _httpClient.PostAsJsonAsync($"{endpoint}", request);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessServerResponse(response);
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
 
     public async Task DeleteAsync(string endpoint)
     {
         var response = await _httpClient.DeleteAsync($"{endpoint}");
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessServerResponse(response);
     }
 
     public async Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest request)
         where TRequest : class
     {
         var response = await _httpClient.PutAsJsonAsync($"{endpoint}", request);
-        response.EnsureSuccessStatusCode();
+        await EnsureSuccessServerResponse(response);
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
 
@@ -40,4 +56,6 @@ public class ApiHttpAdapter : IApiHttpAdapter
         var response = await _httpClient.GetFromJsonAsync<TResponse>($"{endpoint}");
         return response;
     }
+
+
 }

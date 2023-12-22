@@ -2,10 +2,11 @@
 @inject NavigationManager Nav;
 @inject AuthenticationStateProvider AuthProvider;
 @inject StudlyApiBaseService Service;
+@inject ISnackbar AlertMessenger
 @inherits ComponentBase
 
 <MudPaper Elevation="3" Class="p-4 w-100">
-    <p class="fw-bold fs-4">Profile</p>
+    <p class="fw-bold fs-4">Profile RAW</p>
     <hr/>
     @if (_user != null)
     {
@@ -79,8 +80,15 @@
 
     private async Task ProcessLogout()
     {
-        await Auth.Logout();
+        var response = await Auth.Logout();
+
+        if (response.StatusCode == 200)
+        {
+            AlertMessenger.Add("Successful account logout", Severity.Success);
+        }
+
         Nav.NavigateTo("/login");
+
     }
 
     private Task ProcessChangePass()

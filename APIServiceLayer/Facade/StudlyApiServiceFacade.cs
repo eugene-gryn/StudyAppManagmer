@@ -27,7 +27,7 @@ namespace APIServiceLayer.Facade
 
         public override async Task Register(UserRegisterDto data)
         {
-            await Adapter.PostAsync<UserRegisterDto, string>($"{Links.EndpointApiBaseUrl()}{Links.Customer}", data);
+            await Adapter.PostAsync<UserRegisterDto, UserDTO>($"{Links.EndpointApiBaseUrl()}{Links.Customer}", data);
         }
 
         public override async Task<UserDTO?> GetUserData()
