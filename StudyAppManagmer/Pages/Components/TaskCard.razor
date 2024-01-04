@@ -1,9 +1,46 @@
 ﻿@using APIServiceLayer.Models.Tasks
+@using System.Xml.Serialization
 @inherits ComponentBase
 
-<h3>@Task.Title</h3>
+@if (View == ShortView.Card)
+{
+    <MudCard Class="w-25">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <div class="d-flex justify-content-between mb-3">
+                    <MudText Class="">@($"({Task.Priority}) {Task.PriorityStringView()}")</MudText>
+                    <MudText Class="">@Task.StatusStringView()</MudText>
+                    <MudText Class="mr-5">@(Task.GetPercentageOfDoneTasks())%</MudText>
+                </div>
+                <MudText Typo="Typo.h5" Class="my-2">@Task.Title</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.ReadMore"></MudIconButton>
+            </CardHeaderActions>
+        </MudCardHeader>
+        
+        <MudCardContent>
+            <MudText>@LimitDetails(50, Task.Description)</MudText>
+        </MudCardContent>
+        
+        <MudCardActions Class="d-flex justify-content-between">
+            <MudButton StartIcon="@Icons.Material.Filled.DateRange">@Task.GetDeadlineInStringView()</MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Subject">Sub: @(Task.SubTasks.Count)</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
 
 @code {
     [Parameter]
     public TaskDto Task { get; set; }
+
+    [Parameter]
+    public ShortView View { get; set; }
+
+
+    private string LimitDetails(int chars, string text)
+    {
+        return new string(text.Take(chars).ToArray()) + "...";
+    }
 }

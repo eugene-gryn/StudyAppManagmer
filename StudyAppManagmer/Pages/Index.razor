@@ -11,7 +11,7 @@
 
 @foreach (var task in Tasks)
 {
-    <TaskCard Task="task"/>
+    <TaskCard Task="task" View="ShortView.Card"/>
 }
 
 @code
@@ -22,11 +22,16 @@
         {
             Title = "Make some project#1",
             Description = "Some project that makes someones life easy. This is default long description for similar tasks, that makes easy someones life.",
-            Deadline = DateTime.Now.AddHours(10),
-            Priority = 3,
-            Status = 1,
+            Deadline = DateTime.Now.AddHours(100),
+            Priority = 1,
+            Status = 2,
             SubTasks = new List<SubTaskDto>
             {
+                new()
+                {
+                    Title = "Some little subtask#1",
+                    Status = 1
+                },
                 new()
                 {
                     Title = "Some little subtask#1",
@@ -61,7 +66,7 @@
                 new()
                 {
                     Title = "Some little subtask#2",
-                    Status = 1
+                    Status = 0
                 },
                 new()
                 {
@@ -75,24 +80,24 @@
             Title = "Make some project#3",
             Description = "Some project that makes someones life easy. This is default long description for similar tasks, that makes easy someones life.",
             Deadline = DateTime.Now.AddHours(13),
-            Priority = 3,
-            Status = 1,
+            Priority = 5,
+            Status = 0,
             SubTasks = new List<SubTaskDto>
             {
                 new()
                 {
                     Title = "Some little subtask#1",
-                    Status = 1
+                    Status = 0
                 },
                 new()
                 {
                     Title = "Some little subtask#2",
-                    Status = 1
+                    Status = 0
                 },
                 new()
                 {
                     Title = "Some little subtask#3",
-                    Status = 1
+                    Status = 0
                 }
             }
         },
@@ -113,7 +118,7 @@
                 new()
                 {
                     Title = "Some little subtask#2",
-                    Status = 1
+                    Status = 0
                 },
                 new()
                 {
