@@ -1,14 +1,19 @@
 ﻿@using APIServiceLayer.Models.Tasks
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inherits ComponentBase
 
 @if (View == ShortView.Card)
 {
-    <MudCard Style="max-width: 350px">
+    <MudCard Style="max-width: 400px">
         <MudCardHeader>
             <CardHeaderContent>
                 <div class="d-flex justify-content-between mb-3">
-                    <MudText Class="">@($"({TaskObject.Priority}) {TaskObject.PriorityStringView()}")</MudText>
-                    <MudText Class="">@TaskObject.StatusStringView()</MudText>
+                    <div class="p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
+                        <MudText> @($"{TaskObject.Priority} {TaskObject.PriorityStringView()}") </MudText>
+                    </div>
+                    <div class="p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
+                        <MudText Class="">@TaskObject.StatusStringView()</MudText>
+                    </div>
                     <MudText Class="mr-5">@(TaskObject.GetPercentageOfDoneTasks())%</MudText>
                 </div>
                 <MudText Typo="Typo.h5" Class="my-2">@TaskObject.Title</MudText>
@@ -132,6 +137,30 @@
     private string DescriptionLimitDetails(int countSymbols, string text)
     {
         return new string(text.Take(countSymbols).ToArray()) + "...";
+    }
+
+    private string ChooseBgDependingOnPriority()
+    {
+        return TaskObject.Priority switch
+        {
+            var n when (n == 1 || n == 2) => "bg-danger text-white",
+            3 => "bg-info text-white",
+            var n when (n == 4 || n == 5) => "bg-light",
+            _ => ""
+        };
+
+    }
+
+    private string ChooseBgDependingOnStatus()
+    {
+        return TaskObject.Status switch
+        {
+            0 => "bg-success text-white",
+            1 => "bg-warning",
+            2 => "bg-dark text-white",
+            _ => ""
+        };
+
     }
 
     private void SetRescheduleTaskPopoverVisibility(bool value)
