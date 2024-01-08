@@ -1,15 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace APIServiceLayer.Models.Tasks;
 
-namespace APIServiceLayer.Models.Tasks
+public class SubTaskDto
 {
-    public class SubTaskDto
-    {
-        public string Title { get; set; }
-        public int Status { get; set; }
+    public int Id { get; init; } = 0;
+    public string Title { get; init; }
+    public int Status { get; init; }
 
+    public bool GetBoolStatus()
+    {
+        return Status switch
+        {
+            0 => true,
+            1 => false,
+            2 => false,
+            _ => false
+        };
+    }
+
+    public string StatusStringView()
+    {
+        // TODO: Connect to api documentation
+        return Status switch
+        {
+            0 => "Done",
+            1 => "In work",
+            2 => "Preparing to work",
+            _ => "Unknown status!"
+        };
     }
 }

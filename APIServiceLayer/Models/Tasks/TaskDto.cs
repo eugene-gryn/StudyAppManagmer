@@ -15,7 +15,8 @@ public class TaskDto
 
     public int GetPercentageOfDoneTasks()
     {
-        return (int)((double)SubTasks.Count(st => st.Status == 0) / SubTasks.Count * 100);
+        return SubTasks.Count != 0 ?
+            (int)((double)SubTasks.Count(st => st.Status == 0) / SubTasks.Count * 100) : 100;
     }
 
     public string StatusStringView()

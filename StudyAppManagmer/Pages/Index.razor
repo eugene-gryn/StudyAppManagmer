@@ -11,7 +11,7 @@
 
 @foreach (var task in Tasks)
 {
-    <TaskCard Task="task" View="ShortView.Card"/>
+    <TaskCard TaskObject="task" View="ShortView.Card"/>
 }
 
 @code
@@ -29,22 +29,26 @@
             {
                 new()
                 {
+                    Id = 0,
                     Title = "Some little subtask#1",
                     Status = 1
                 },
                 new()
                 {
-                    Title = "Some little subtask#1",
-                    Status = 1
-                },
-                new()
-                {
+                    Id = 1,
                     Title = "Some little subtask#2",
                     Status = 1
                 },
                 new()
                 {
+                    Id = 2,
                     Title = "Some little subtask#3",
+                    Status = 1
+                },
+                new()
+                {
+                    Id = 3,
+                    Title = "Some little subtask#4",
                     Status = 1
                 }
             }
