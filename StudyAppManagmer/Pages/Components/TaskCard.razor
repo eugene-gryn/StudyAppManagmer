@@ -1,10 +1,9 @@
 ﻿@using APIServiceLayer.Models.Tasks
-@using System.Xml.Serialization
 @inherits ComponentBase
 
 @if (View == ShortView.Card)
 {
-    <MudCard Class="w-25">
+    <MudCard Style="max-width: 350px">
         <MudCardHeader>
             <CardHeaderContent>
                 <div class="d-flex justify-content-between mb-3">
@@ -15,16 +14,48 @@
                 <MudText Typo="Typo.h5" Class="my-2">@Task.Title</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.ReadMore"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.MoreVert"></MudIconButton>
             </CardHeaderActions>
         </MudCardHeader>
-        
+
         <MudCardContent>
-            <MudText>@LimitDetails(50, Task.Description)</MudText>
+            <MudText>@DescriptionLimitDetails(50, Task.Description)</MudText>
         </MudCardContent>
-        
+
         <MudCardActions Class="d-flex justify-content-between">
-            <MudButton StartIcon="@Icons.Material.Filled.DateRange">@Task.GetDeadlineInStringView()</MudButton>
+            <MudButton
+                @ref="_changeDueDateButtonAnchor"
+                OnClick="@(e => SetRescheduleTaskPopoverVisibility(true))"
+                StartIcon="@Icons.Material.Filled.DateRange">
+                Due: @Task.GetDeadlineInStringView()
+                <MudPopover
+                    AnchorOrigin="Origin.BottomRight"
+                    Open="_isPopoverChangeDueDateVisible"
+                    Fixed="true"
+                    AnchorRef="@_changeDueDateButtonAnchor">
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between m-2">
+                            <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date">Today</MudButton>
+                            <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date.AddDays(1)">Tomorrow</MudButton>
+                            <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date.AddDays(7)">Next week</MudButton>
+                        </div>
+                        <MudDatePicker
+                            Style="max-width: 150px"
+                            DateFormat="dd MMM"
+                            Variant="Variant.Outlined"
+                            Placeholder="@Task.GetDeadlineInStringView()"
+                            IsDateDisabledFunc="time => time.Date < DateTime.Today"
+                            @bind-Date="_tempTaskChangeDueDate"
+                            PickerVariant="PickerVariant.Static"/>
+                        <div class="d-flex justify-content-between mx-2">
+                            <MudButton OnClick="CancelAndCloseFormRescheduleTaskDue" Variant="Variant.Outlined" Color="Color.Error">Cancel</MudButton>
+                            <MudButton OnClick="RescheduleTaskDue" Variant="Variant.Outlined" Color="Color.Success">Submit</MudButton>
+                        </div>
+                    </div>
+                </MudPopover>
+            </MudButton>
+
+
             <MudButton StartIcon="@Icons.Material.Filled.Subject">Sub: @(Task.SubTasks.Count)</MudButton>
         </MudCardActions>
     </MudCard>
@@ -32,15 +63,44 @@
 
 
 @code {
+
+    // Parameters setting for view Task cards and get info
     [Parameter]
-    public TaskDto Task { get; set; }
+    public required TaskDto Task { get; set; }
 
     [Parameter]
-    public ShortView View { get; set; }
+    public ShortView View { get; set; } = ShortView.Card;
+
+    // Variables to service due date change popover
+    private DateTime? _tempTaskChangeDueDate;
+    private bool _isPopoverChangeDueDateVisible;
+    private MudButton? _changeDueDateButtonAnchor;
+
+    //
+    //     
 
 
-    private string LimitDetails(int chars, string text)
+    protected override Task OnInitializedAsync()
     {
-        return new string(text.Take(chars).ToArray()) + "...";
+        _tempTaskChangeDueDate = Task.Deadline;
+        return base.OnInitializedAsync();
     }
+
+    private Task CancelAndCloseFormRescheduleTaskDue()
+    {
+        _tempTaskChangeDueDate = Task.Deadline;
+        SetRescheduleTaskPopoverVisibility(false);
+        return System.Threading.Tasks.Task.CompletedTask;
+    }
+
+    private string DescriptionLimitDetails(int countSymbols, string text)
+    {
+        return new string(text.Take(countSymbols).ToArray()) + "...";
+    }
+
+    private void SetRescheduleTaskPopoverVisibility(bool value)
+    {
+        _isPopoverChangeDueDateVisible = value;
+    }
+
 }
