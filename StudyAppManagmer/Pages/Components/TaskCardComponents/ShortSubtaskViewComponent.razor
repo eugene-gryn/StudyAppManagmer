@@ -1,0 +1,61 @@
+﻿@using APIServiceLayer.Models.Tasks
+@using System.ComponentModel.DataAnnotations
+@inherits ComponentBase
+
+<MudButton @ref="_subtasksShortViewAnchor"
+           StartIcon="@Icons.Material.Filled.Subject"
+           OnClick="() => SetShortViewSubtasksVisibility(true)">
+    Sub: @(TaskObject.SubTasks.Count)
+    <MudPopover Class="p-3"
+                AnchorOrigin="Origin.BottomRight"
+                Open="_isPopoverShortViewSubtasksVisible"
+                Fixed="true"
+                AnchorRef="@_subtasksShortViewAnchor">
+        <div class="d-flex flex-column">
+            <MudText Typo="Typo.h5">Sub tasks</MudText>
+            @foreach (var subtask in TaskObject.SubTasks.OrderByDescending(st => st.Status).ThenBy(sb => sb.Title))
+            {
+                <div>
+                    <MudCheckBox UnCheckedColor="Color.Error"
+                                 Color="Color.Success"
+                                 Checked="subtask.GetBoolStatus()"
+                                 CheckedChanged="b => ChangedSubtaskStatus(b, subtask)"
+                                 Label="@subtask.Title"
+                                 T="bool"
+                                 TriState="true"/>
+                    <hr class="my-1">
+                </div>
+            }
+        </div>
+        <div class="mt-2">
+            <MudButton OnClick="() => SetShortViewSubtasksVisibility(false)" Variant="Variant.Outlined" Color="Color.Error">Close</MudButton>
+        </div>
+    </MudPopover>
+</MudButton>
+
+@code {
+
+    [Required]
+    [Parameter]
+    public TaskDto TaskObject { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<(bool, SubTaskDto)> OnChangeSubtaskStatus { get; set; }
+
+
+    private MudButton? _subtasksShortViewAnchor;
+    private bool _isPopoverShortViewSubtasksVisible;
+
+    private void SetShortViewSubtasksVisibility(bool value)
+    {
+        _isPopoverShortViewSubtasksVisible = value;
+    }
+
+    private async Task ChangedSubtaskStatus(bool? status, SubTaskDto subTask)
+    {
+        if (OnChangeSubtaskStatus.HasDelegate)
+        {
+            await OnChangeSubtaskStatus.InvokeAsync((status != null && status.Value, subTask));
+        }
+    }
+}

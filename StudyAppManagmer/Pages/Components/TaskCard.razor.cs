@@ -4,12 +4,10 @@ namespace StudyAppManagement.Pages.Components;
 
 public partial class TaskCard
 {
-    private Task RescheduleTaskDue()
+    private void RescheduleTaskDue(DateTime date)
     {
-        Console.WriteLine($"Reschedule task {_tempTaskChangeDueDate?.ToShortDateString()}");
-        if (_tempTaskChangeDueDate != null) TaskObject.Deadline = _tempTaskChangeDueDate.Value;
-        SetRescheduleTaskPopoverVisibility(false);
-        return Task.CompletedTask;
+        Console.WriteLine($"Reschedule task {date.ToShortDateString()}");
+        TaskObject.Deadline = date;
     }
 
     private Task OnChangeSubtaskStatus(bool value, SubTaskDto subtask)
@@ -29,9 +27,9 @@ public partial class TaskCard
     }
 
 
-    private Task TaskBeginCounting()
+    private Task TaskBeginCounting(int id)
     {
-        Console.WriteLine("Started counting!");
+        Console.WriteLine("Started counting time on task ID:" + id);
         return Task.CompletedTask;
     }
 

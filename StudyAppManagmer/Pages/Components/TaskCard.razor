@@ -1,5 +1,6 @@
 ﻿@using APIServiceLayer.Models.Tasks
 @using System.ComponentModel.DataAnnotations
+
 @inherits ComponentBase
 
 @if (TaskView == ShortView.Card)
@@ -22,27 +23,10 @@
                 <MudText Typo="Typo.h5" Class="my-2">@TaskObject.Title</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-                    <MudMenuItem
-                        IconSize="Size.Small" IconColor="Color.Primary"
-                        Href="@($"/task/{TaskObject.Id}")"
-                        Icon="@Icons.Material.Filled.Edit">
-                        Edit
-                    </MudMenuItem>
-
-                    <MudMenuItem
-                        IconSize="Size.Small" IconColor="Color.Primary"
-                        OnClick="TaskBeginCounting"
-                        Icon="@Icons.Material.Filled.Timer">
-                        Begin timer
-                    </MudMenuItem>
-                    <MudMenuItem
-                        IconSize="Size.Small" IconColor="Color.Error"
-                        OnClick="() => TaskDeleteOperation(TaskObject.Id)"
-                        Icon="@Icons.Material.Filled.Delete">
-                        Delete
-                    </MudMenuItem>
-                </MudMenu>
+                <ShortTaskOperationMenuComponent 
+                    TaskObject="TaskObject" 
+                    OnBeginTimeCountingClick="TaskBeginCounting" 
+                    OnDeleteTaskClick="TaskDeleteOperation" />
             </CardHeaderActions>
         </MudCardHeader>
 
@@ -51,74 +35,10 @@
         </MudCardContent>
 
         <MudCardActions Class="d-flex justify-content-between">
-            <MudButton
-                @ref="_changeDueDateButtonAnchor"
-                OnClick="@(e => SetRescheduleTaskPopoverVisibility(true))"
-                StartIcon="@Icons.Material.Filled.DateRange">
-                Due: @TaskObject.GetDeadlineInStringView()
-                <MudPopover
-                    AnchorOrigin="Origin.BottomRight"
-                    Open="_isPopoverChangeDueDateVisible"
-                    Fixed="true"
-                    AnchorRef="@_changeDueDateButtonAnchor">
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between m-2">
-                            <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date">Today</MudButton>
-                            <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date.AddDays(1)">Tomorrow</MudButton>
-                            <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date.AddDays(7)">Next week</MudButton>
-                        </div>
-                        <MudDatePicker
-                            Style="max-width: 150px"
-                            DateFormat="dd MMM"
-                            Variant="Variant.Outlined"
-                            Placeholder="@TaskObject.GetDeadlineInStringView()"
-                            IsDateDisabledFunc="time => time.Date < DateTime.Today"
-                            @bind-Date="_tempTaskChangeDueDate"
-                            PickerVariant="PickerVariant.Static"/>
-                        <div class="d-flex justify-content-between mx-2">
-                            <MudButton OnClick="CancelAndCloseFormRescheduleTaskDue" Variant="Variant.Outlined" Color="Color.Error">Cancel</MudButton>
-                            <MudButton OnClick="RescheduleTaskDue" Variant="Variant.Outlined" Color="Color.Success">Submit</MudButton>
-                        </div>
-                    </div>
-                </MudPopover>
-            </MudButton>
+            
+            <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue" />
+            <ShortSubtaskViewComponent TaskObject="TaskObject" OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)" />
 
-
-            <MudButton
-                @ref="_subtasksShortViewAnchor"
-                StartIcon="@Icons.Material.Filled.Subject"
-                OnClick="() => SetShortViewSubtasksVisibility(true)">
-                Sub: @(TaskObject.SubTasks.Count)
-                <MudPopover
-                    Class="p-3"
-                    AnchorOrigin="Origin.BottomRight"
-                    Open="_isPopoverShortViewSubtasksVisible"
-                    Fixed="true"
-                    AnchorRef="@_subtasksShortViewAnchor">
-                    <div class="d-flex flex-column">
-                        <MudText Typo="Typo.h5">Sub tasks</MudText>
-                        @foreach (var subtask in TaskObject.SubTasks.OrderByDescending(st => st.Status).ThenBy(sb => sb.Title))
-                        {
-                            <div>
-                                <MudCheckBox
-                                    UnCheckedColor="Color.Error"
-                                    Color="Color.Success"
-                                    Checked="subtask.GetBoolStatus()"
-                                    CheckedChanged="b => OnChangeSubtaskStatus(b, subtask)"
-                                    Label="@subtask.Title"
-                                    T="bool"
-                                    TriState="true"/>
-                                <hr class="my-1">
-                            </div>
-                        }
-                    </div>
-                    <div class="mt-2">
-                        <MudButton OnClick="() => SetShortViewSubtasksVisibility(false)" Variant="Variant.Outlined" Color="Color.Error">Close</MudButton>
-                    </div>
-                </MudPopover>
-
-
-            </MudButton>
         </MudCardActions>
     </MudCard>
 }
@@ -141,82 +61,15 @@
                 </div>
             </div>
             <div class="d-flex align-items-center">
-                <MudButton @ref="_changeDueDateButtonAnchor"
-                           OnClick="@(e => SetRescheduleTaskPopoverVisibility(true))"
-                           StartIcon="@Icons.Material.Filled.DateRange">
-                    Due: @TaskObject.GetDeadlineInStringView()
-                    <MudPopover AnchorOrigin="Origin.BottomRight"
-                                Open="_isPopoverChangeDueDateVisible"
-                                Fixed="true"
-                                AnchorRef="@_changeDueDateButtonAnchor">
-                        <div class="p-3">
-                            <div class="d-flex justify-content-between m-2">
-                                <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date">Today</MudButton>
-                                <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date.AddDays(1)">Tomorrow</MudButton>
-                                <MudButton OnClick="() => _tempTaskChangeDueDate = DateTime.Now.Date.AddDays(7)">Next week</MudButton>
-                            </div>
-                            <MudDatePicker Style="max-width: 150px"
-                                           DateFormat="dd MMM"
-                                           Variant="Variant.Outlined"
-                                           Placeholder="@TaskObject.GetDeadlineInStringView()"
-                                           IsDateDisabledFunc="time => time.Date < DateTime.Today"
-                            @bind-Date="_tempTaskChangeDueDate"
-                                           PickerVariant="PickerVariant.Static" />
-                            <div class="d-flex justify-content-between mx-2">
-                                <MudButton OnClick="CancelAndCloseFormRescheduleTaskDue" Variant="Variant.Outlined" Color="Color.Error">Cancel</MudButton>
-                                <MudButton OnClick="RescheduleTaskDue" Variant="Variant.Outlined" Color="Color.Success">Submit</MudButton>
-                            </div>
-                        </div>
-                    </MudPopover>
-                </MudButton>
-                <MudButton @ref="_subtasksShortViewAnchor"
-                           StartIcon="@Icons.Material.Filled.Subject"
-                           OnClick="() => SetShortViewSubtasksVisibility(true)">
-                    Sub: @(TaskObject.SubTasks.Count)
-                    <MudPopover Class="p-3"
-                                AnchorOrigin="Origin.BottomRight"
-                                Open="_isPopoverShortViewSubtasksVisible"
-                                Fixed="true"
-                                AnchorRef="@_subtasksShortViewAnchor">
-                        <div class="d-flex flex-column">
-                            <MudText Typo="Typo.h5">Sub tasks</MudText>
-                            @foreach (var subtask in TaskObject.SubTasks.OrderByDescending(st => st.Status).ThenBy(sb => sb.Title))
-                            {
-                                <div>
-                                    <MudCheckBox UnCheckedColor="Color.Error"
-                                                 Color="Color.Success"
-                                                 Checked="subtask.GetBoolStatus()"
-                                                 CheckedChanged="b => OnChangeSubtaskStatus(b, subtask)"
-                                                 Label="@subtask.Title"
-                                                 T="bool"
-                                                 TriState="true" />
-                                    <hr class="my-1">
-                                </div>
-                            }
-                        </div>
-                        <div class="mt-2">
-                            <MudButton OnClick="() => SetShortViewSubtasksVisibility(false)" Variant="Variant.Outlined" Color="Color.Error">Close</MudButton>
-                        </div>
-                    </MudPopover>
-                </MudButton>
-                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-                    <MudMenuItem IconSize="Size.Small" IconColor="Color.Primary"
-                                 Href="@($"/task/{TaskObject.Id}")"
-                                 Icon="@Icons.Material.Filled.Edit">
-                        Edit
-                    </MudMenuItem>
 
-                    <MudMenuItem IconSize="Size.Small" IconColor="Color.Primary"
-                                 OnClick="TaskBeginCounting"
-                                 Icon="@Icons.Material.Filled.Timer">
-                        Begin timer
-                    </MudMenuItem>
-                    <MudMenuItem IconSize="Size.Small" IconColor="Color.Error"
-                                 OnClick="() => TaskDeleteOperation(TaskObject.Id)"
-                                 Icon="@Icons.Material.Filled.Delete">
-                        Delete
-                    </MudMenuItem>
-                </MudMenu>
+                <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue" />
+
+                <ShortSubtaskViewComponent TaskObject="TaskObject" OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)" />
+
+                <ShortTaskOperationMenuComponent 
+                    TaskObject="TaskObject" 
+                    OnBeginTimeCountingClick="TaskBeginCounting" 
+                    OnDeleteTaskClick="TaskDeleteOperation" />
             </div>
         </div>
     }
@@ -235,28 +88,7 @@
     [Parameter]
     public bool IsCreationForm { get; set; } = false;
 
-    // Variables to service due date change popover
-    private DateTime? _tempTaskChangeDueDate;
-    private bool _isPopoverChangeDueDateVisible;
-    private MudButton? _changeDueDateButtonAnchor;
 
-    // Variables to service short view of subtasks
-    private MudButton? _subtasksShortViewAnchor;
-    private bool _isPopoverShortViewSubtasksVisible;
-
-
-    protected override Task OnInitializedAsync()
-    {
-        _tempTaskChangeDueDate = TaskObject.Deadline;
-        return base.OnInitializedAsync();
-    }
-
-    private Task CancelAndCloseFormRescheduleTaskDue()
-    {
-        _tempTaskChangeDueDate = TaskObject.Deadline;
-        SetRescheduleTaskPopoverVisibility(false);
-        return Task.CompletedTask;
-    }
 
     // Limits description count of characters and ads in end "..."
     private string DescriptionLimitDetails(int countSymbols, string text)
@@ -286,14 +118,6 @@
             };
     }
 
-    private void SetRescheduleTaskPopoverVisibility(bool value)
-    {
-        _isPopoverChangeDueDateVisible = value;
-    }
 
-    private void SetShortViewSubtasksVisibility(bool value)
-    {
-        _isPopoverShortViewSubtasksVisible = value;
-    }
 
 }

@@ -1,0 +1,53 @@
+﻿@using APIServiceLayer.Models.Tasks
+@using System.ComponentModel.DataAnnotations
+@inherits ComponentBase
+
+<MudMenu Icon="@Icons.Material.Filled.MoreVert">
+    <MudMenuItem IconSize="Size.Small" IconColor="Color.Primary"
+                 Href="@($"/task/{TaskObject.Id}")"
+                 Icon="@Icons.Material.Filled.Edit">
+        Edit
+    </MudMenuItem>
+
+    <MudMenuItem IconSize="Size.Small" IconColor="Color.Primary"
+                 OnClick="() => TaskBeginCounting(TaskObject.Id)"
+                 Icon="@Icons.Material.Filled.Timer">
+        Begin timer
+    </MudMenuItem>
+    <MudMenuItem IconSize="Size.Small" IconColor="Color.Error"
+                 OnClick="() => TaskDeleteOperation(TaskObject.Id)"
+                 Icon="@Icons.Material.Filled.Delete">
+        Delete
+    </MudMenuItem>
+</MudMenu>
+
+@code {
+
+    [Required]
+    [Parameter]
+    public TaskDto TaskObject { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnBeginTimeCountingClick { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDeleteTaskClick { get; set; }
+
+
+    private async Task TaskBeginCounting(int id)
+    {
+        if (OnBeginTimeCountingClick.HasDelegate)
+        {
+            await OnBeginTimeCountingClick.InvokeAsync(id);
+        }
+    }
+
+    private async Task TaskDeleteOperation(int id)
+    {
+        if (OnDeleteTaskClick.HasDelegate)
+        {
+            await OnDeleteTaskClick.InvokeAsync(id);
+        }
+    }
+
+}
