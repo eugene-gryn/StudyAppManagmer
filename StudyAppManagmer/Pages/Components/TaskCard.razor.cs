@@ -9,7 +9,7 @@ public partial class TaskCard
         Console.WriteLine($"Reschedule task {_tempTaskChangeDueDate?.ToShortDateString()}");
         if (_tempTaskChangeDueDate != null) TaskObject.Deadline = _tempTaskChangeDueDate.Value;
         SetRescheduleTaskPopoverVisibility(false);
-        return System.Threading.Tasks.Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     private Task OnChangeSubtaskStatus(bool value, SubTaskDto subtask)
@@ -25,12 +25,26 @@ public partial class TaskCard
                     Status = value ? 0 : 1
                 };
 
-        return System.Threading.Tasks.Task.CompletedTask;
+        return Task.CompletedTask;
+    }
+
+
+    private Task TaskBeginCounting()
+    {
+        Console.WriteLine("Started counting!");
+        return Task.CompletedTask;
+    }
+
+    private Task TaskDeleteOperation(int id)
+    {
+        Console.WriteLine($"Deleting task ID:{id}!");
+        return Task.CompletedTask;
     }
 }
 
 public enum ShortView
 {
     List,
-    Card
+    Card,
+    Create
 }

@@ -1,25 +1,47 @@
 ﻿@using APIServiceLayer.Models.Tasks
-@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inherits ComponentBase
 
 @if (View == ShortView.Card)
 {
-    <MudCard Style="max-width: 400px">
+    <MudCard Style="max-width: 420px">
         <MudCardHeader>
             <CardHeaderContent>
-                <div class="d-flex justify-content-between mb-3">
-                    <div class="p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
                         <MudText> @($"{TaskObject.Priority} {TaskObject.PriorityStringView()}") </MudText>
                     </div>
-                    <div class="p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
+                    <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
                         <MudText Class="">@TaskObject.StatusStringView()</MudText>
                     </div>
-                    <MudText Class="mr-5">@(TaskObject.GetPercentageOfDoneTasks())%</MudText>
+                    <div class="d-flex p-2 rounded-2 align-items-center">
+                        <MudText Class="mr-5">@(TaskObject.GetPercentageOfDoneTasks())%</MudText>
+                        <MudProgressLinear Style="min-width: 50px;" Color="Color.Primary" Value="@(TaskObject.GetPercentageOfDoneTasks())"/>
+                    </div>
                 </div>
                 <MudText Typo="Typo.h5" Class="my-2">@TaskObject.Title</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.MoreVert"></MudIconButton>
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                    <MudMenuItem
+                        IconSize="Size.Small" IconColor="Color.Primary"
+                        Href="@($"/task/{TaskObject.Id}")"
+                        Icon="@Icons.Material.Filled.Edit">
+                        Edit
+                    </MudMenuItem>
+
+                    <MudMenuItem
+                        IconSize="Size.Small" IconColor="Color.Primary"
+                        OnClick="TaskBeginCounting"
+                        Icon="@Icons.Material.Filled.Timer">
+                        Begin timer
+                    </MudMenuItem>
+                    <MudMenuItem
+                        IconSize="Size.Small" IconColor="Color.Error"
+                        OnClick="() => TaskDeleteOperation(TaskObject.Id)"
+                        Icon="@Icons.Material.Filled.Delete">
+                        Delete
+                    </MudMenuItem>
+                </MudMenu>
             </CardHeaderActions>
         </MudCardHeader>
 
@@ -143,12 +165,11 @@
     {
         return TaskObject.Priority switch
         {
-            var n when (n == 1 || n == 2) => "bg-danger text-white",
+            var n when n == 1 || n == 2 => "bg-danger text-white",
             3 => "bg-info text-white",
-            var n when (n == 4 || n == 5) => "bg-light",
+            var n when n == 4 || n == 5 => "bg-light",
             _ => ""
-        };
-
+            };
     }
 
     private string ChooseBgDependingOnStatus()
@@ -159,8 +180,7 @@
             1 => "bg-warning",
             2 => "bg-dark text-white",
             _ => ""
-        };
-
+            };
     }
 
     private void SetRescheduleTaskPopoverVisibility(bool value)

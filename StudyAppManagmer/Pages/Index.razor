@@ -11,7 +11,9 @@
 
 @foreach (var task in Tasks)
 {
-    <TaskCard TaskObject="task" View="ShortView.Card"/>
+    <div class="m-3">
+        <TaskCard TaskObject="task" View="ShortView.Card"/>
+    </div>
 }
 
 @code
