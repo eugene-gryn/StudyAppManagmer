@@ -45,6 +45,5 @@ public partial class TaskCard
 public enum ShortView
 {
     List,
-    Card,
-    Create
+    Card
 }
