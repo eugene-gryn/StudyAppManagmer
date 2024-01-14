@@ -7,7 +7,7 @@
            OnClick="() => SetRescheduleTaskPopoverVisibility(true)"
            StartIcon="@Icons.Material.Filled.DateRange">
     Due: @TaskObject.GetDeadlineInStringView()
-    <MudPopover AnchorOrigin="Origin.BottomRight"
+    <MudPopover AnchorOrigin="Origin.BottomLeft"
                 Open="_isPopoverChangeDueDateVisible"
                 Fixed="true"
                 AnchorRef="@_changeDueDateButtonAnchor">

@@ -10,6 +10,12 @@ public partial class TaskCard
         TaskObject.Deadline = date;
     }
 
+    private Task ChangeStatusCodeOfTask(int statusCode)
+    {
+        TaskObject.Status = statusCode;
+        return Task.CompletedTask;
+    }
+
     private Task OnChangeSubtaskStatus(bool value, SubTaskDto subtask)
     {
         Console.WriteLine($"Changed status of subtask {subtask.Id} to {value}");

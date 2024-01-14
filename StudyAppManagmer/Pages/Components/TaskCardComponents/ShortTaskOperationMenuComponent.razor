@@ -9,6 +9,29 @@
         Edit
     </MudMenuItem>
 
+    <MudMenuItem>
+        <MudMenu ActivationEvent="MouseEvent.MouseOver" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomRight">
+            <ActivatorContent>
+                <MudMenuItem Icon="@Icons.Material.Filled.ArrowDropDown">Set status</MudMenuItem>
+            </ActivatorContent>
+
+            <ChildContent>
+                <MudMenuItem 
+                    IconColor="Color.Dark"
+                    Icon="@Icons.Material.Filled.Queue"
+                    OnClick="() => ChangeStatusTaskById(StatusCodePreparing)">Preparing to work</MudMenuItem>
+                <MudMenuItem 
+                    IconColor="Color.Warning"
+                    Icon="@Icons.Material.Filled.Work"
+                    OnClick="() => ChangeStatusTaskById(StatusCodeInWork)">In work</MudMenuItem>
+                <MudMenuItem 
+                    IconColor="Color.Success"
+                    Icon="@Icons.Material.Filled.Done"
+                    OnClick="() => ChangeStatusTaskById(StatusCodeDone)">Done</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </MudMenuItem>
+
     <MudMenuItem IconSize="Size.Small" IconColor="Color.Primary"
                  OnClick="() => TaskBeginCounting(TaskObject.Id)"
                  Icon="@Icons.Material.Filled.Timer">
@@ -23,15 +46,22 @@
 
 @code {
 
+        private const int StatusCodePreparing = 2;
+        private const int StatusCodeInWork = 1;
+        private const int StatusCodeDone = 0;
+
     [Required]
     [Parameter]
-    public TaskDto TaskObject { get; set; }
+    public TaskDto TaskObject { get; set; } = new();
 
     [Parameter]
     public EventCallback<int> OnBeginTimeCountingClick { get; set; }
 
     [Parameter]
     public EventCallback<int> OnDeleteTaskClick { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnChangeStatusTaskById { get; set; }
 
 
     private async Task TaskBeginCounting(int id)
@@ -47,6 +77,14 @@
         if (OnDeleteTaskClick.HasDelegate)
         {
             await OnDeleteTaskClick.InvokeAsync(id);
+        }
+    }
+
+    private async Task ChangeStatusTaskById(int status)
+    {
+        if (OnChangeStatusTaskById.HasDelegate)
+        {
+            await OnChangeStatusTaskById.InvokeAsync(status);
         }
     }
 
