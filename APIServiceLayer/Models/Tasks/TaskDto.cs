@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace APIServiceLayer.Models.Tasks;
+﻿namespace APIServiceLayer.Models.Tasks;
 
 public class TaskDto
 {
@@ -11,19 +9,18 @@ public class TaskDto
     public int Priority { get; set; }
     public int Status { get; set; }
 
-    public List<SubTaskDto> SubTasks { get; set; }
+    public List<SubTaskDto> SubTasks { get; set; } = new List<SubTaskDto>();
 
 
     public int GetPercentageOfDoneTasks()
     {
-        return SubTasks.Count != 0 ?
-            (int)((double)SubTasks.Count(st => st.Status == 0) / SubTasks.Count * 100) : 100;
+        return SubTasks.Count != 0 ? (int)((double)SubTasks.Count(st => st.Status == 0) / SubTasks.Count * 100) : 100;
     }
 
-    public string StatusStringView()
+    public static string StatusStringView(int status)
     {
         // TODO: Connect to api documentation
-        return Status switch
+        return status switch
         {
             0 => "Done",
             1 => "In work",
@@ -32,9 +29,9 @@ public class TaskDto
         };
     }
 
-    public string PriorityStringView()
+    public static string PriorityStringView(int priority)
     {
-        return Priority switch
+        return priority switch
         {
             1 => "Critical",
             2 => "Critical",
@@ -45,13 +42,18 @@ public class TaskDto
         };
     }
 
-    public string GetDeadlineInStringView()
+    public static string GetDeadlineInStringView(DateTime deadline)
     {
-        if (Deadline.Date == DateTime.Today) return "Today";
-        if (Deadline.Date == DateTime.Today.AddDays(1)) return "Tomorrow";
+        if (deadline.Date == DateTime.Today) return "Today";
+        if (deadline.Date == DateTime.Today.AddDays(1)) return "Tomorrow";
 
-        if (Deadline.Date < DateTime.Today) return "Overdue" + Deadline.ToString("dd/MM");
+        if (deadline.Date < DateTime.Today) return "Overdue" + deadline.ToString("dd/MM");
 
-        return Deadline.ToString("dd MMM");
+        return deadline.ToString("dd MMM");
+    }
+
+    public static bool GetBoolStatus(int status)
+    {
+        return status == 0;
     }
 }

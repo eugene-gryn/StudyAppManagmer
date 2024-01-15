@@ -13,12 +13,19 @@
                 AnchorRef="@_subtasksShortViewAnchor">
         <div class="d-flex flex-column">
             <MudText Typo="Typo.h5">Sub tasks</MudText>
+            @if (IsVisibleProgressBar)
+            {
+                <div class="d-flex align-items-center my-2">
+                    <MudText Class="mr-5">@(TaskObject.GetPercentageOfDoneTasks())%</MudText>
+                    <MudProgressLinear Style="min-width: 50px;" Color="Color.Primary" Value="@(TaskObject.GetPercentageOfDoneTasks())"/>
+                </div>
+            }
             @foreach (var subtask in TaskObject.SubTasks.OrderByDescending(st => st.Status).ThenBy(sb => sb.Title))
             {
                 <div>
                     <MudCheckBox UnCheckedColor="Color.Error"
                                  Color="Color.Success"
-                                 Checked="subtask.GetBoolStatus()"
+                                 Checked="TaskDto.GetBoolStatus(subtask.Status)"
                                  CheckedChanged="b => ChangedSubtaskStatus(b, subtask)"
                                  Label="@subtask.Title"
                                  T="bool"
@@ -42,6 +49,9 @@
     [Parameter]
     public EventCallback<(bool, SubTaskDto)> OnChangeSubtaskStatus { get; set; }
 
+    [Parameter]
+    public bool IsVisibleProgressBar { get; set; } = false;
+
 
     private MudButton? _subtasksShortViewAnchor;
     private bool _isPopoverShortViewSubtasksVisible;
@@ -58,4 +68,5 @@
             await OnChangeSubtaskStatus.InvokeAsync((status != null && status.Value, subTask));
         }
     }
+
 }

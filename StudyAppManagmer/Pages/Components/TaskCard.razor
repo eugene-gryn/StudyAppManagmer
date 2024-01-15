@@ -1,67 +1,68 @@
 ﻿@using APIServiceLayer.Models.Tasks
-@using System.ComponentModel.DataAnnotations
-
 @inherits ComponentBase
 
 @{
-    //TODO: Сделать: Возможность добавления новой задачи из главного экрана
     //TODO: Сделать: Разные формы добавления для карточки и списка
 }
 
 
 @if (TaskView == ShortView.Card)
 {
-    <MudCard Style="max-width: 420px">
-        <MudCardHeader>
-            <CardHeaderContent>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
-                        <MudText> @($"{TaskObject.Priority} {TaskObject.PriorityStringView()}") </MudText>
-                    </div>
-                    <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
-                        <MudText Class="">@TaskObject.StatusStringView()</MudText>
+    @if (TaskObject != null)
+    {
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex justify-content-around align-items-center mb-3 flex-wrap">
+                        <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
+                            <MudText> @($"{TaskObject.Priority} {TaskDto.PriorityStringView(TaskObject.Priority)}") </MudText>
+                        </div>
+                        <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
+                            <MudText Class="">@TaskDto.StatusStringView(TaskObject.Status)</MudText>
+                        </div>
                     </div>
                     <div class="d-flex p-2 rounded-2 align-items-center">
                         <MudText Class="mr-5">@(TaskObject.GetPercentageOfDoneTasks())%</MudText>
                         <MudProgressLinear Style="min-width: 50px;" Color="Color.Primary" Value="@(TaskObject.GetPercentageOfDoneTasks())"/>
                     </div>
-                </div>
-                <MudText Typo="Typo.h5" Class="my-2">@TaskObject.Title</MudText>
-            </CardHeaderContent>
-            <CardHeaderActions>
-                <ShortTaskOperationMenuComponent 
-                    TaskObject="TaskObject" 
-                    OnBeginTimeCountingClick="TaskBeginCounting" 
-                    OnDeleteTaskClick="TaskDeleteOperation" />
-            </CardHeaderActions>
-        </MudCardHeader>
+                    <MudText Typo="Typo.h5" Class="my-2">@TaskObject.Title</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <ShortTaskOperationMenuComponent
+                        TaskObject="TaskObject"
+                        OnBeginTimeCountingClick="TaskBeginCounting"
+                        OnDeleteTaskClick="TaskDeleteOperation"
+                        OnChangeStatusTaskById="ChangeStatusCodeOfTask"/>
+                </CardHeaderActions>
+            </MudCardHeader>
 
-        <MudCardContent>
-            <MudText>@DescriptionLimitDetails(50, TaskObject.Description)</MudText>
-        </MudCardContent>
+            <MudCardContent>
+                <MudText>@DescriptionLimitDetails(50, TaskObject.Description)</MudText>
+            </MudCardContent>
 
-        <MudCardActions Class="d-flex justify-content-between">
-            
-            <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue" />
-            <ShortSubtaskViewComponent TaskObject="TaskObject" OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)" />
+            <MudCardActions Class="d-flex justify-content-between">
 
-        </MudCardActions>
-    </MudCard>
+                <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue"/>
+                <ShortSubtaskViewComponent TaskObject="TaskObject" OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)"/>
+
+            </MudCardActions>
+        </MudCard>
+    }
 }
 @if (TaskView == ShortView.List)
 {
-    @if (!IsCreationForm)
+    @if (TaskObject != null)
     {
         <div class="d-flex justify-content-between border-2 rounded border-light p-2 align-items-center flex-wrap">
             <div>
                 <div style="height:auto; width:auto; display: inline-block;"
                      class="align-items-centerm mb-2 mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
-                    <MudText Class="">@TaskObject.StatusStringView()</MudText>
+                    <MudText Class="">@TaskDto.StatusStringView(TaskObject.Status)</MudText>
                 </div>
 
                 <div class="d-flex">
                     <div style="height:auto; width:auto; display: inline-block;"
-                    class="mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
+                         class="mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
                         <MudText> @($"{TaskObject.Priority}") </MudText>
                     </div>
                     <MudText Typo="Typo.h6">@TaskObject.Title</MudText>
@@ -69,39 +70,37 @@
             </div>
             <div class="d-flex align-items-center">
 
-                <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue" />
+                <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue"/>
 
-                <ShortSubtaskViewComponent TaskObject="TaskObject" OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)" />
+                <ShortSubtaskViewComponent
+                    TaskObject="TaskObject"
+                    IsVisibleProgressBar="true"
+                    OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)"/>
 
-                <ShortTaskOperationMenuComponent 
-                    TaskObject="TaskObject" 
-                    OnBeginTimeCountingClick="TaskBeginCounting" 
-                    OnDeleteTaskClick="TaskDeleteOperation" 
+                <ShortTaskOperationMenuComponent
+                    TaskObject="TaskObject"
+                    OnBeginTimeCountingClick="TaskBeginCounting"
+                    OnDeleteTaskClick="TaskDeleteOperation"
                     OnChangeStatusTaskById="ChangeStatusCodeOfTask"/>
             </div>
         </div>
     }
-
 }
 
 @code {
 
     // Parameters setting for view TaskObject cards and get info
-    [Required, Parameter]
-    public required TaskDto TaskObject { get; set; }
+    [Parameter]
+    public required TaskDto? TaskObject { get; set; }
 
     [Parameter]
     public ShortView TaskView { get; set; } = ShortView.Card;
-
-    [Parameter]
-    public bool IsCreationForm { get; set; } = false;
-
 
 
     // Limits description count of characters and ads in end "..."
     private string DescriptionLimitDetails(int countSymbols, string text)
     {
-        return new string(text.Take(countSymbols).ToArray()) + "...";
+        return new string(text.ToArray().Take(countSymbols).ToArray()) + "...";
     }
 
     private string ChooseBgDependingOnPriority()

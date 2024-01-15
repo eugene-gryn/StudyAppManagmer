@@ -1,31 +1,17 @@
-﻿namespace APIServiceLayer.Models.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace APIServiceLayer.Models.Tasks;
 
 public class SubTaskDto
 {
+    private const int PreparingCodeStatus = 2;
+
     public int Id { get; init; } = 0;
-    public string Title { get; init; }
-    public int Status { get; init; }
 
-    public bool GetBoolStatus()
-    {
-        return Status switch
-        {
-            0 => true,
-            1 => false,
-            2 => false,
-            _ => false
-        };
-    }
+    [Required]
+    [MinLength(5, ErrorMessage = "Title must be at least 5 characters!")]
+    [MaxLength(30, ErrorMessage = "Title limit 30 characters!")]
+    public string Title { get; set; } = string.Empty;
 
-    public string StatusStringView()
-    {
-        // TODO: Connect to api documentation
-        return Status switch
-        {
-            0 => "Done",
-            1 => "In work",
-            2 => "Preparing to work",
-            _ => "Unknown status!"
-        };
-    }
+    [Required] public int Status { get; set; } = PreparingCodeStatus;
 }
