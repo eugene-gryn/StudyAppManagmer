@@ -1,0 +1,32 @@
+﻿@using APIServiceLayer.Models.Tasks
+<MudDialog>
+    <TitleContent>
+        <MudTextField Label="Title" T="string" @bind-Value="TaskModel.Title">
+
+        </MudTextField>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText>@TaskModel.Description</MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="CloseDialog">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [Parameter]
+    public TaskDto TaskModel { get; set; } = new();
+
+    [CascadingParameter]
+    public MudDialogInstance CurrentDialog { get; set; }
+
+
+    private void CloseDialog()
+    {
+        CurrentDialog.Close();
+    }
+
+}

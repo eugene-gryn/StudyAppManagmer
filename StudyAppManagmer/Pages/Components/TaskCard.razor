@@ -1,9 +1,6 @@
-﻿@using APIServiceLayer.Models.Tasks
+﻿@inject IDialogService EditDialogService
+@using APIServiceLayer.Models.Tasks
 @inherits ComponentBase
-
-@{
-    //TODO: Сделать: Разные формы добавления для карточки и списка
-}
 
 
 @if (TaskView == ShortView.Card)
@@ -53,37 +50,53 @@
 {
     @if (TaskObject != null)
     {
-        <div class="d-flex justify-content-between border-2 rounded border-light p-2 align-items-center flex-wrap">
-            <div>
-                <div style="height:auto; width:auto; display: inline-block;"
-                     class="align-items-centerm mb-2 mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
-                    <MudText Class="">@TaskDto.StatusStringView(TaskObject.Status)</MudText>
-                </div>
-
-                <div class="d-flex">
+        <MudPaper>
+            <div class="d-flex justify-content-between border-2 rounded border-light p-2 align-items-center flex-wrap">
+                <div class="">
                     <div style="height:auto; width:auto; display: inline-block;"
-                         class="mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
-                        <MudText> @($"{TaskObject.Priority}") </MudText>
+                         class="align-items-centerm mb-2 mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
+                        <MudText Class="pe-none">@TaskDto.StatusStringView(TaskObject.Status)</MudText>
                     </div>
-                    <MudText Typo="Typo.h6">@TaskObject.Title</MudText>
+
+                    <div class="d-flex">
+                        <div style="height:auto; width:auto; display: inline-block;"
+                             class="mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
+                            <MudTooltip
+                                Text="@TaskDto.PriorityStringView(TaskObject.Priority)">
+                                <MudText Class="pe-none"> @($"{TaskObject.Priority}") </MudText>
+                            </MudTooltip>
+                        </div>
+                        <MudTooltip 
+                            Text="@DescriptionLimitDetails(50, TaskObject.Description)"
+                            Placement="Placement.Right">
+                            <MudText Class="pe-none" Typo="Typo.h6">@TaskObject.Title</MudText>
+                        </MudTooltip>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <MudTooltip Text="Task reshedule">
+                        <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue"/>
+                    </MudTooltip>
+                    
+                    <MudTooltip Text="Subtask short view">
+                        <ShortSubtaskViewComponent
+                            TaskObject="TaskObject"
+                            IsVisibleProgressBar="true"
+                            OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)"/>
+                    </MudTooltip>
+
+                    <MudTooltip Text="Other operations..">
+                        <ShortTaskOperationMenuComponent
+                            TaskObject="TaskObject"
+                            OnBeginTimeCountingClick="TaskBeginCounting"
+                            OnDeleteTaskClick="TaskDeleteOperation"
+                            OnChangeStatusTaskById="ChangeStatusCodeOfTask"
+                            OnClickEditTaskPage="OpenTaskEditDialog"/>
+                    </MudTooltip>
                 </div>
             </div>
-            <div class="d-flex align-items-center">
+        </MudPaper>
 
-                <ChangeDatePicker TaskObject="TaskObject" OnTaskDueDateChanged="RescheduleTaskDue"/>
-
-                <ShortSubtaskViewComponent
-                    TaskObject="TaskObject"
-                    IsVisibleProgressBar="true"
-                    OnChangeSubtaskStatus="tuple => OnChangeSubtaskStatus(tuple.Item1, tuple.Item2)"/>
-
-                <ShortTaskOperationMenuComponent
-                    TaskObject="TaskObject"
-                    OnBeginTimeCountingClick="TaskBeginCounting"
-                    OnDeleteTaskClick="TaskDeleteOperation"
-                    OnChangeStatusTaskById="ChangeStatusCodeOfTask"/>
-            </div>
-        </div>
     }
 }
 
@@ -125,5 +138,23 @@
             };
     }
 
+
+    private async Task OpenTaskEditDialog()
+    {
+        var parameter = new DialogParameters<DetailsInfoTaskDialogComponent> { { x => x.TaskModel, TaskObject } };
+
+        var dialog = await EditDialogService.ShowAsync<DetailsInfoTaskDialogComponent>("Edit task", parameter, new DialogOptions()
+        {
+            DisableBackdropClick = true
+        });
+
+        var result = await dialog.Result;
+
+        if (result.Canceled)
+        {
+            // TODO Connect to API
+            Console.WriteLine("Some things to update data from back!");
+        }
+    }
 
 }

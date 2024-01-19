@@ -11,14 +11,12 @@
 
 @foreach (var task in _tasks)
 {
-    <div style="max-width: 420px;" class="m-3">
+    <div style="" class="m-3">
         <TaskCard TaskObject="task" TaskView="ShortView.Card"/>
     </div>
 }
-<div style="max-width: 420px;" class="m-3">
-    <TaskAddComponent 
-        View="ShortView.Card" 
-        OnConfirmCreationTaskCallback="OnCreationNewTask"></TaskAddComponent>
+<div style="" class="m-3">
+    <TaskAddComponent OnConfirmCreationTaskCallback="OnCreationNewTask"></TaskAddComponent>
 </div>
 
 

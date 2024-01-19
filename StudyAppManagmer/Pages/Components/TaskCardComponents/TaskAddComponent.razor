@@ -18,73 +18,60 @@
 
     @if (_isActivatedAddForm)
     {
-        @if (View == ShortView.Card)
-        {
-            <MudPaper Class="py-1 px-4">
-                <EditForm Model="@_creationModel" OnValidSubmit="ConfirmCreationTask">
-                    <DataAnnotationsValidator/>
+        <MudPaper Class="py-1 px-4">
+            <EditForm Model="@_creationModel" OnValidSubmit="ConfirmCreationTask">
+                <DataAnnotationsValidator />
 
-                    <MudTextField
-                        Class="mb-2"
-                        Label="Title"
-                        Variant="Variant.Outlined"
-                        @bind-Value="_creationModel.Title"
-                        For="@(() => _creationModel.Title)">
-                    </MudTextField>
-                    <MudTextField
-                        Label="Description" 
-                        Lines="3"
-                        @bind-Value="_creationModel.Description"
-                        For="@(() => _creationModel.Description)">
-                    </MudTextField>
-                    <MudDatePicker Label="Deadline"
-                                   Class="my-2"
-                                   IsDateDisabledFunc="d => d.Date < DateTime.Today"
-                                   PickerVariant="PickerVariant.Dialog"
-                                   For="@(() => _creationModel.Deadline)"
-                                   @bind-Date="_creationModel.Deadline">
-                    </MudDatePicker>
-                    <MudSelect T="int"
-                               Class="my-3"
+                <MudTextField Class="mb-2"
+                              Label="Title"
+                              Variant="Variant.Outlined"
+                @bind-Value="_creationModel.Title"
+                              For="@(() => _creationModel.Title)">
+                </MudTextField>
+                <MudTextField Label="Description"
+                              Lines="3"
+                @bind-Value="_creationModel.Description"
+                              For="@(() => _creationModel.Description)">
+                </MudTextField>
+                <MudDatePicker Label="Deadline"
+                               Class="my-2"
+                               IsDateDisabledFunc="d => d.Date < DateTime.Today"
+                               PickerVariant="PickerVariant.Dialog"
+                               For="@(() => _creationModel.Deadline)"
+                @bind-Date="_creationModel.Deadline">
+                </MudDatePicker>
+                <MudSelect T="int"
+                           Class="my-3"
+                           Variant="Variant.Outlined"
+                           Label="Priority"
+                @bind-Value="_creationModel.Priority"
+                           For="@(() => _creationModel.Priority)">
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        var i1 = i;
+                        <MudSelectItem Value="@i">@($"{i1} - {TaskDto.PriorityStringView(i1)}")</MudSelectItem>
+                    }
+                </MudSelect>
+                <!-- Add SubTasks component if needed -->
+                <div class="d-flex justify-content-between my-3">
+                    <MudButton OnClick="CloseCreationFormAndResetData"
                                Variant="Variant.Outlined"
-                               Label="Priority"
-                               @bind-Value="_creationModel.Priority"
-                               For="@(() => _creationModel.Priority)">
-                        @for (var i = 1; i <= 5; i++)
-                        {
-                            var i1 = i;
-                            <MudSelectItem Value="@i">@($"{i1} - {TaskDto.PriorityStringView(i1)}")</MudSelectItem>
-                        }
-                    </MudSelect>
-                    <!-- Add SubTasks component if needed -->
-                    <div class="d-flex justify-content-between my-3">
-                        <MudButton
-                            OnClick="CloseCreationFormAndResetData"
-                            Variant="Variant.Outlined"
-                            Color="Color.Error">
-                            Cancel
-                        </MudButton>
-                        <MudButton Variant="Variant.Outlined"
-                                   Color="Color.Success"
-                                   ButtonType="ButtonType.Submit">
-                            Add
-                        </MudButton>
-                    </div>
-                </EditForm>
-            </MudPaper>
-        }
-        @if (View == ShortView.List)
-        {
-        }
+                               Color="Color.Error">
+                        Cancel
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Success"
+                               ButtonType="ButtonType.Submit">
+                        Add
+                    </MudButton>
+                </div>
+            </EditForm>
+        </MudPaper>
     }
 
 </div>
 
 @code {
-
-    [Parameter]
-    public ShortView View { get; set; }
-
     [Parameter]
     public EventCallback<CreateTaskDto> OnConfirmCreationTaskCallback { get; set; }
 

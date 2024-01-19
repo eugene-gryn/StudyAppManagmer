@@ -4,7 +4,7 @@
 
 <MudMenu Icon="@Icons.Material.Filled.MoreVert">
     <MudMenuItem IconSize="Size.Small" IconColor="Color.Primary"
-                 Href="@($"/task/{TaskObject.Id}")"
+                 OnClick="OnClickTaskEditPage"
                  Icon="@Icons.Material.Filled.Edit">
         Edit
     </MudMenuItem>
@@ -62,6 +62,9 @@
 
     [Parameter]
     public EventCallback<int> OnChangeStatusTaskById { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnClickEditTaskPage { get; set; }
 
 
     private async Task TaskBeginCounting(int id)
@@ -85,6 +88,14 @@
         if (OnChangeStatusTaskById.HasDelegate)
         {
             await OnChangeStatusTaskById.InvokeAsync(status);
+        }
+    }
+
+    private async Task OnClickTaskEditPage()
+    {
+        if (OnClickEditTaskPage.HasDelegate)
+        {
+            await OnClickEditTaskPage.InvokeAsync();
         }
     }
 
