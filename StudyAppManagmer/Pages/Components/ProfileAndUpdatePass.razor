@@ -3,6 +3,7 @@
 @inject AuthenticationStateProvider AuthProvider;
 @inject StudlyApiBaseService Service;
 @inject ISnackbar AlertMessenger
+@using System.Net
 @inherits ComponentBase
 
 <MudPaper Elevation="3" Class="p-4 w-100">
@@ -73,7 +74,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _user = await Service.GetUserData();
+        try
+        {
+            _user = await Service.GetUserData();
+        }
+        catch (HttpRequestException e)
+        {
+            if (e.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                AlertMessenger.Add("You need to log back in!", Severity.Warning);
+
+                await Auth.Logout();
+
+                Nav.NavigateTo("/login");
+            }
+        }
+
     }
 
 
