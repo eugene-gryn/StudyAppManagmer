@@ -1,4 +1,5 @@
 ﻿using APIServiceLayer.Models.Tasks;
+using APIServiceLayer.Models.Tasks.Enums;
 
 namespace StudyAppManagement.Pages.Components;
 
@@ -12,7 +13,7 @@ public partial class TaskCard
 
     private Task ChangeStatusCodeOfTask(int statusCode)
     {
-        TaskObject.Status = statusCode;
+        TaskObject.Status = (ChallengeStatus)statusCode;
         return Task.CompletedTask;
     }
 

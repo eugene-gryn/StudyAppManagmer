@@ -1,6 +1,4 @@
 ﻿@page "/"
-@using APIServiceLayer.Models.Tasks
-@using System.Runtime.CompilerServices
 @inject StudlyApiBaseService ApiService
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthService
@@ -12,7 +10,7 @@
 @foreach (var task in _tasks)
 {
     <div style="" class="m-3">
-        <TaskCard TaskObject="task" TaskView="ShortView.Card"/>
+        <TaskCard TaskObject="task" TaskView="ShortView.List"/>
     </div>
 }
 <div style="" class="m-3">

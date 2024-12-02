@@ -25,7 +25,7 @@
                 <div>
                     <MudCheckBox UnCheckedColor="Color.Error"
                                  Color="Color.Success"
-                                 Checked="TaskDto.GetBoolStatus(subtask.Status)"
+                                 Checked="ChallengeDto.GetBoolStatus(subtask.Status)"
                                  CheckedChanged="b => ChangedSubtaskStatus(b, subtask)"
                                  Label="@subtask.Title"
                                  T="bool"
@@ -44,7 +44,7 @@
 
     [Required]
     [Parameter]
-    public TaskDto TaskObject { get; set; } = new();
+    public ChallengeDto TaskObject { get; set; } = new();
 
     [Parameter]
     public EventCallback<(bool, SubTaskDto)> OnChangeSubtaskStatus { get; set; }

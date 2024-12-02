@@ -1,5 +1,6 @@
 ﻿@inject IDialogService EditDialogService
 @using APIServiceLayer.Models.Tasks
+@using APIServiceLayer.Models.Tasks.Enums
 @inherits ComponentBase
 
 
@@ -12,10 +13,10 @@
                 <CardHeaderContent>
                     <div class="d-flex justify-content-around align-items-center mb-3 flex-wrap">
                         <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
-                            <MudText> @($"{TaskObject.Priority} {TaskDto.PriorityStringView(TaskObject.Priority)}") </MudText>
+                            <MudText> @($"{TaskObject.Priority} {ChallengeDto.PriorityStringView(TaskObject.Priority)}") </MudText>
                         </div>
                         <div class="align-items-center p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
-                            <MudText Class="">@TaskDto.StatusStringView(TaskObject.Status)</MudText>
+                            <MudText Class="">@ChallengeDto.StatusStringView(TaskObject.Status)</MudText>
                         </div>
                     </div>
                     <div class="d-flex p-2 rounded-2 align-items-center">
@@ -55,14 +56,14 @@
                 <div class="">
                     <div style="height:auto; width:auto; display: inline-block;"
                          class="align-items-centerm mb-2 mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnStatus()) text-black">
-                        <MudText Class="pe-none">@TaskDto.StatusStringView(TaskObject.Status)</MudText>
+                        <MudText Class="pe-none">@ChallengeDto.StatusStringView(TaskObject.Status)</MudText>
                     </div>
 
                     <div class="d-flex">
                         <div style="height:auto; width:auto; display: inline-block;"
                              class="mx-2 p-1 px-2 rounded-3 @(ChooseBgDependingOnPriority()) text-black">
                             <MudTooltip
-                                Text="@TaskDto.PriorityStringView(TaskObject.Priority)">
+                                Text="@ChallengeDto.PriorityStringView(TaskObject.Priority)">
                                 <MudText Class="pe-none"> @($"{TaskObject.Priority}") </MudText>
                             </MudTooltip>
                         </div>
@@ -104,7 +105,7 @@
 
     // Parameters setting for view TaskObject cards and get info
     [Parameter]
-    public required TaskDto? TaskObject { get; set; }
+    public required ChallengeDto? TaskObject { get; set; }
 
     [Parameter]
     public ShortView TaskView { get; set; } = ShortView.Card;
@@ -120,9 +121,9 @@
     {
         return TaskObject.Priority switch
         {
-            var n when n == 1 || n == 2 => "bg-danger text-white",
-            3 => "bg-info text-white",
-            var n when n == 4 || n == 5 => "bg-light",
+            var n when n is ChallengePriority.Highest or ChallengePriority.High => "bg-danger text-white",
+            ChallengePriority.Medium => "bg-info text-white",
+            var n when n is ChallengePriority.Low or ChallengePriority.Lowest => "bg-light",
             _ => ""
             };
     }
@@ -131,9 +132,9 @@
     {
         return TaskObject.Status switch
         {
-            0 => "bg-success text-white",
-            1 => "bg-warning",
-            2 => "bg-dark text-white",
+            ChallengeStatus.Completed => "bg-success text-white",
+            ChallengeStatus.InProcess => "bg-warning",
+            ChallengeStatus.NotStarted => "bg-dark text-white",
             _ => ""
             };
     }

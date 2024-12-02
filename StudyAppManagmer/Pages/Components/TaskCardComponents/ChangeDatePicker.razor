@@ -6,7 +6,7 @@
 <MudButton @ref="_changeDueDateButtonAnchor"
            OnClick="() => SetRescheduleTaskPopoverVisibility(true)"
            StartIcon="@Icons.Material.Filled.DateRange">
-    Due: @TaskDto.GetDeadlineInStringView(TaskObject.Deadline)
+    Due: @ChallengeDto.GetDeadlineInStringView(TaskObject.Deadline)
     <MudPopover AnchorOrigin="Origin.BottomLeft"
                 Open="_isPopoverChangeDueDateVisible"
                 Fixed="true"
@@ -20,7 +20,7 @@
             <MudDatePicker Style="max-width: 150px"
                            DateFormat="dd MMM"
                            Variant="Variant.Outlined"
-                           Placeholder="@TaskDto.GetDeadlineInStringView(TaskObject.Deadline)"
+                           Placeholder="@ChallengeDto.GetDeadlineInStringView(TaskObject.Deadline)"
                            IsDateDisabledFunc="time => time.Date < DateTime.Today"
                            @bind-Date="_tempTaskChangeDueDate"
                            PickerVariant="PickerVariant.Static"/>
@@ -37,7 +37,7 @@
 
     [Required]
     [Parameter]
-    public TaskDto TaskObject { get; set; } = new();
+    public ChallengeDto TaskObject { get; set; } = new();
 
     [Parameter]
     public EventCallback<DateTime> OnTaskDueDateChanged { get; set; }
